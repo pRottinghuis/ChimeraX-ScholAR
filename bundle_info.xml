@@ -8,10 +8,11 @@
 
   <!-- Synopsis is a one-line description
        Description is a full multi-line description -->
-  <Synopsis>Interface between ChimeraX and Schol-AR.</Synopsis>
-  <Description>Interface between ChimeraX and Schol-AR.
+  <Synopsis>Create augmented reality and web browser data augmentations for publication.</Synopsis>
+  <Description>Create, edit, and export your ChimeraX models to Schol-AR's augmented reality projects. User interface
+    and commands support project creation, augmentation creation, and augmentation editing capabilities.
 
-    Create and edit Schol-AR projects in ChimeraX.
+  Find the tool in the Tools menu under General -> ScholAR.
   </Description>
 
   <!-- Categories is a list where this bundle should appear -->

@@ -1,3 +1,16 @@
+"""
+This module contains the implementation of the Scholar UI components for the Scholar application.
+
+Classes:
+    ScholarAugPreviewWidget: Widget for previewing augmentations within a project.
+    ScholarLoginWidget: Widget for handling user login within the Scholar application.
+    ScholarProjectWidget: Widget for handling project selection and creation within the Scholar application.
+    ScholarSelAugWidget: Widget for selecting and creating augmentations within a project.
+    ScholarAugEditWidget: Widget for editing augmentations within a project.
+    ScholarMainLayout: Main layout for the Scholar application, managing different widgets for login, project selection,
+                       augmentation selection, and augmentation editing.
+"""
+
 import os
 
 from Qt.QtCore import Qt, QUrl
@@ -9,11 +22,25 @@ from .io import APIManager
 
 
 class ScholarAugPreviewWidget(QWidget):
+    """
+    Widget for previewing augmentations within a project.
+
+    This widget provides a user interface to display the target image, public QR code,
+    admin QR code, and the tracking score for an augmentation. It also allows assigning
+    the preview to a tool window.
+    """
+
     def __init__(self):
+        """
+        Initialize the ScholarAugPreviewWidget.
+        """
         super().__init__()
         self.setup_aug_preview_ui()
 
     def setup_aug_preview_ui(self):
+        """
+        Set up the UI for the augmentation preview widget.
+        """
         self.layout = QVBoxLayout(self)
 
         # Create a horizontal layout to the preview label and the label stack for the qr and tracking score
@@ -126,11 +153,28 @@ class ScholarAugPreviewWidget(QWidget):
 
     @staticmethod
     def create_new_aug_preview_ui(child_window, target_image_path, pub_qr_path, admin_qr_path, tracking_score):
+        """
+        Create a new augmentation preview UI.
+
+        :param child_window: The child window to assign the preview UI to.
+        :param target_image_path: The path to the target image.
+        :param pub_qr_path: The path to the public QR code image.
+        :param admin_qr_path: The path to the admin QR code image.
+        :param tracking_score: The target image tracking score.
+        """
         preview_widget = ScholarAugPreviewWidget()
         preview_widget.assign_to_preview_window(child_window)
         preview_widget.preview_aug(target_image_path, pub_qr_path, admin_qr_path, tracking_score)
 
     def preview_aug(self, preview_image_path, pub_qr_path, admin_qr_path, tracking_score):
+        """
+        Preview the augmentation.
+
+        :param preview_image_path: The path to the preview image.
+        :param pub_qr_path: The path to the public QR code image.
+        :param admin_qr_path: The path to the admin QR code image.
+        :param tracking_score: The tracking score.
+        """
         preview_pixmap = QPixmap(preview_image_path)
         self.previewLabel.setPixmap(
             preview_pixmap.scaled(self.previewLabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -156,19 +200,31 @@ class ScholarAugPreviewWidget(QWidget):
 
     def assign_to_preview_window(self, tool_window):
         """
-        This needs to be called before preview_aug is called so that the layout is set and the window size can pick up
-        on the right sizeHints
+        Assign the preview widget to a tool window.
+
+        :param tool_window: The tool window to assign the preview widget to.
         """
+        # This needs to be called before preview_aug is called so that the layout is set and the window size can pick up
+        # on the right sizeHints
         tool_window.setLayout(self.layout)
 
 
 class ScholarLoginWidget(QWidget):
+    """
+    Widget for handling user login within the Scholar application.
+    """
 
     def __init__(self):
+        """
+        Initialize the ScholarLoginWidget.
+        """
         super().__init__()
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the UI for the login widget.
+        """
         self.main_layout = QVBoxLayout(self)
         # This spacing will apply to all sub layouts
         self.main_layout.setSpacing(10)
@@ -279,39 +335,73 @@ class ScholarLoginWidget(QWidget):
         self.main_layout.addLayout(self.bottom_submission_hbox)
 
     def refresh_iu(self):
+        """
+        Refresh the input fields for the login widget.
+        """
         self.existing_user_combobox.clear()
         self.user_lineedit.clear()
         self.api_token_lineedit.clear()
 
     def set_login_combobox(self, users: list):
+        """
+        Set the items in the existing user combobox.
+
+        :param users: List of usernames to add to the combobox.
+        """
         self.existing_user_combobox.clear()
         self.existing_user_combobox.addItems(users)
 
     def get_exiting_user(self) -> str:
+        """
+        Get the selected existing user.
+
+        :return: The username of the selected existing user.
+        """
         return self.existing_user_combobox.currentText()
 
     def get_new_login_info(self) -> tuple:
         """
-        :return: (username, api_token)
+        Get the new login information.
+
+        :return: A tuple containing the username and API token.
         """
         return self.user_lineedit.text(), self.api_token_lineedit.text()
 
     @property
     def new_user_signal(self):
+        """
+        Signal for the new user submission button.
+
+        :return: The clicked signal of the submit new user button.
+        """
         return self.submit_new_user_button.clicked
 
     @property
     def existing_user_signal(self):
+        """
+        Signal for the existing user selection button.
+
+        :return: The clicked signal of the select existing user button.
+        """
         return self.select_existing_user_button.clicked
 
 
 class ScholarProjectWidget(QWidget):
+    """
+    Widget for handling Schol-AR project selection and creation.
+    """
 
     def __init__(self):
+        """
+        Initialize the ScholarProjectWidget.
+        """
         super().__init__()
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the UI for the project widget.
+        """
         self.main_layout = QVBoxLayout(self)
         # This spacing will apply to all sub layouts
         self.main_layout.setSpacing(10)
@@ -368,20 +458,35 @@ class ScholarProjectWidget(QWidget):
         self.main_layout.addWidget(self.create_new_project_button, alignment=Qt.AlignmentFlag.AlignRight)
 
     def refresh_ui(self):
+        """
+        Refresh the input fields for the project widget.
+        """
         self.existing_project_combobox.clear()
         self.project_name_lineedit.clear()
         self.project_url_lineedit.clear()
 
     def set_existing_projects(self, projects: list):
+        """
+        Set the items in the existing project combobox.
+
+        :param projects: List of project titles to add to the combobox.
+        """
         self.existing_project_combobox.clear()
         self.existing_project_combobox.addItems(projects)
 
     def get_existing_project_title(self) -> str:
+        """
+        Get the selected existing project title.
+
+        :return: The title of the selected existing project.
+        """
         return self.existing_project_combobox.currentText()
 
     def get_new_proj_info(self) -> tuple:
         """
-        :return: (project_name, project_type, project_url)
+        Get the new project information.
+
+        :return: A tuple containing the project name, project type, and project URL.
         """
         return (self.project_name_lineedit.text(),
                 self.project_type_combobox.currentText(),
@@ -389,20 +494,39 @@ class ScholarProjectWidget(QWidget):
 
     @property
     def select_existing_project_signal(self):
+        """
+        Signal for the existing project selection button.
+
+        :return: The clicked signal of the select existing project button.
+        """
         return self.select_existing_project_button.clicked
 
     @property
     def create_new_project_signal(self):
+        """
+        Signal for the create new project button.
+
+        :return: The clicked signal of the create new project button.
+        """
         return self.create_new_project_button.clicked
 
 
 class ScholarSelAugWidget(QWidget):
+    """
+    Widget for selecting and creating augmentations within a project.
+    """
 
     def __init__(self):
+        """
+        Initialize the ScholarSelAugWidget.
+        """
         super().__init__()
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the UI for the augmentation selection widget.
+        """
         self.main_layout = QVBoxLayout(self)
         # This spacing will apply to all sub layouts
         self.main_layout.setSpacing(10)
@@ -453,39 +577,81 @@ class ScholarSelAugWidget(QWidget):
         self.main_layout.addWidget(self.select_existing_augmentation_button, alignment=Qt.AlignmentFlag.AlignRight)
 
     def refresh_ui(self):
+        """
+        Refresh the input fields for the augmentation selection widget.
+        """
         self.augmentation_title_lineedit.clear()
         self.augmentation_combobox.clear()
         self.project_title_label.clear()
 
     def set_project_title(self, title):
+        """
+        Set the project title label.
+
+        :param title: The title of the project.
+        """
         self.project_title_label.setText(f"Project: {title}")
 
     def get_new_aug_title(self) -> str:
+        """
+        Get the new augmentation title.
+
+        :return: The title of the new augmentation.
+        """
         return self.augmentation_title_lineedit.text()
 
     def set_existing_augmentations(self, augmentations: list):
+        """
+        Set the items in the existing augmentations combobox.
+
+        :param augmentations: List of augmentation titles to add to the combobox.
+        """
         self.augmentation_combobox.clear()
         self.augmentation_combobox.addItems(augmentations)
 
     def get_existing_aug_selection(self) -> str:
+        """
+        Get the selected existing augmentation title.
+
+        :return: The title of the selected existing augmentation.
+        """
         return self.augmentation_combobox.currentText()
 
     @property
     def create_new_aug_signal(self):
+        """
+        Signal for the create new augmentation button.
+
+        :return: The clicked signal of the create new augmentation button.
+        """
         return self.create_new_augmentation_button.clicked
 
     @property
     def select_existing_aug_signal(self):
+        """
+        Signal for the select existing augmentation button.
+
+        :return: The clicked signal of the select existing augmentation button.
+        """
         return self.select_existing_augmentation_button.clicked
 
 
 class ScholarAugEditWidget(QWidget):
+    """
+    Widget for editing augmentations within a project.
+    """
 
     def __init__(self):
+        """
+        Initialize the ScholarAugEditWidget.
+        """
         super().__init__()
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the UI for the augmentation edit widget.
+        """
         self.main_layout = QVBoxLayout(self)
 
         # Title label for the active project
@@ -527,17 +693,35 @@ class ScholarAugEditWidget(QWidget):
         self.main_layout.addLayout(self.preview_action_layout)
 
     def refresh_ui(self):
+        """
+        Refresh the input fields for the augmentation edit widget.
+        """
         self.target_image_pixmap_label.clear()
         self.project_title_label.clear()
         self.augmentation_title_label.clear()
 
     def set_project_title(self, title):
+        """
+        Set the project title label.
+
+        :param title: The title of the project.
+        """
         self.project_title_label.setText(f"Project: {title}")
 
     def set_augmentation_title(self, title):
+        """
+        Set the augmentation title label.
+
+        :param title: The title of the augmentation.
+        """
         self.augmentation_title_label.setText(f"Selected Augmentation: {title}")
 
     def update_target_image_display(self, image_path):
+        """
+        Update the target image display.
+
+        :param image_path: The path to the target image.
+        """
         self.target_image_pixmap_label.clear()
 
         pixmap = QPixmap(image_path)
@@ -554,26 +738,55 @@ class ScholarAugEditWidget(QWidget):
 
     @property
     def update_target_image_signal(self):
+        """
+        Signal for the update target image button.
+
+        :return: The clicked signal of the update target image button.
+        """
         return self.update_target_image_button.clicked
 
     @property
     def update_model_signal(self):
+        """
+        Signal for the update model button.
+
+        :return: The clicked signal of the update model button.
+        """
         return self.update_model_button.clicked
 
     @property
     def preview_aug_signal(self):
+        """
+        Signal for the preview augmentation button.
+
+        :return: The clicked signal of the preview augmentation button.
+        """
         return self.preview_aug_button.clicked
 
     @property
     def save_files_locally_signal(self):
+        """
+        Signal for the save files locally button.
+
+        :return: The clicked signal of the save files locally button.
+        """
         return self.save_files_locally_button.clicked
 
     @property
     def save_and_close_signal(self):
+        """
+        Signal for the save and close button.
+
+        :return: The clicked signal of the save and close button.
+        """
         return self.save_and_close_button.clicked
 
 
 class ScholarMainLayout(QVBoxLayout):
+    """
+    Main layout for the Scholar application, managing different widgets for login, project selection,
+    augmentation selection, and augmentation editing.
+    """
 
     LOGIN = 0
     PROJECT_SELECT = 1
@@ -581,6 +794,11 @@ class ScholarMainLayout(QVBoxLayout):
     AUGMENTATION_EDIT = 3
 
     def __init__(self, parent=None):
+        """
+        Initialize the ScholarMainLayout.
+
+        :param parent: The parent widget, if any.
+        """
         super().__init__(parent)
         parent.setLayout(self)
 
@@ -635,7 +853,10 @@ class ScholarMainLayout(QVBoxLayout):
 
     def set_active_widget(self, widget: int):
         """
-        :param widget: use class variables to set the widget
+        Set the active widget in the main stack. Use the class constants (LOGIN, PROJECT_SELECT, AUGMENTATION_SELECT,
+        AUGMENTATION_EDIT) to set the widget.
+
+        :param widget: The index of the widget to set as active.
         """
         self.main_stack.setCurrentIndex(widget)
         
@@ -665,29 +886,69 @@ class ScholarMainLayout(QVBoxLayout):
             self.store_qr_button.show()
 
     def get_login_widget(self) -> ScholarLoginWidget:
+        """
+        Get the login widget.
+
+        :return: The login widget.
+        """
         return self.main_stack.widget(0)
 
     def get_project_widget(self) -> ScholarProjectWidget:
+        """
+        Get the project widget.
+
+        :return: The project widget.
+        """
         return self.main_stack.widget(1)
 
     def get_aug_sel_widget(self) -> ScholarSelAugWidget:
+        """
+        Get the augmentation selection widget.
+
+        :return: The augmentation selection widget.
+        """
         return self.main_stack.widget(2)
 
     def get_augmentation_edit_widget(self) -> ScholarAugEditWidget:
+        """
+        Get the augmentation edit widget.
+
+        :return: The augmentation edit widget.
+        """
         return self.main_stack.widget(3)
 
     @property
     def return_login_page_signal(self):
+        """
+        Signal for the return to login page button.
+
+        :return: The clicked signal of the return to login page button.
+        """
         return self.login_button.clicked
 
     @property
     def return_project_page_signal(self):
+        """
+        Signal for the return to project page button.
+
+        :return: The clicked signal of the return to project page button.
+        """
         return self.project_button.clicked
 
     @property
     def save_qr_signal(self):
+        """
+        Signal for the save QR button.
+
+        :return: The clicked signal of the save QR button.
+        """
         return self.store_qr_button.clicked
 
     @property
     def return_augmentation_page_signal(self):
+        """
+        Signal for the return to augmentation page button.
+
+        :return: The clicked signal of the return to augmentation page button.
+        """
         return self.augmentation_button.clicked
