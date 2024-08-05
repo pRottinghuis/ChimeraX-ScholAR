@@ -1,15 +1,7 @@
-<!--
-ChimeraX bundle names must start with "ChimeraX-"
-to avoid clashes with package names in pypi.python.org.
-When uploaded to the ChimeraX toolshed, the bundle
-will be displayed without the ChimeraX- prefix.
--->
-
-<BundleInfo name="ChimeraX-ChimeraX-ScholAR"
-	    version="0.1" package="chimerax.chimerax_scholar"
+<BundleInfo name="ChimeraX-ScholAR"
+	    version="0.1" package="chimerax.scholar"
   	    minSessionVersion="1" maxSessionVersion="1">
 
-  <!-- Additional information about bundle source -->
   <Author>UCSF RBVI</Author>
   <Email>chimerax@cgl.ucsf.edu</Email>
   <URL>https://www.rbvi.ucsf.edu/chimerax/</URL>
@@ -19,7 +11,7 @@ will be displayed without the ChimeraX- prefix.
   <Synopsis>Interface between ChimeraX and Schol-AR.</Synopsis>
   <Description>Interface between ChimeraX and Schol-AR.
 
-    Create and edit your Schol-AR projects in ChimeraX.
+    Create and edit Schol-AR projects in ChimeraX.
   </Description>
 
   <!-- Categories is a list where this bundle should appear -->
@@ -28,7 +20,6 @@ will be displayed without the ChimeraX- prefix.
   </Categories>
 
   <!-- Dependencies on other ChimeraX/Python packages -->
-  <!-- This example uses functionality from the Tutorial_Command bundle -->
   <Dependencies>
     <Dependency name="ChimeraX-Core" version="~=1.1"/>
     <Dependency name="ChimeraX-UI" version="~=1.0"/>
@@ -45,8 +36,41 @@ will be displayed without the ChimeraX- prefix.
     <PythonClassifier>License :: Freeware</PythonClassifier>
     <!-- ChimeraX classifiers describe supplied functionality -->
     <!-- Register a graphical interface tool -->
-    <ChimeraXClassifier>ChimeraX :: Tool :: ChimeraX-ScholAR ::
+    <ChimeraXClassifier>ChimeraX :: Tool :: ScholAR ::
       General :: ChimeraX and Schol-AR interface</ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar login :: General ::
+      User login for scholar</ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar project :: General ::
+      Select an existing project or create a new one and set up file structure.</ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar augmentation :: General ::
+      Select an existing augmentation or create a new one and set up file structure. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar downloadAugFiles :: General ::
+      Download augmentation files from Schol-AR into the local directory structure. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar uploadAugFiles :: General ::
+      Upload augmentation files from the current session to the Schol-AR from the local directory structure. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar downloadQR :: General ::
+      Download the QR files associated with a project. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar saveAugSession :: General ::
+      Save a ChimeraX Session file to an augmentation. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar openAugSession :: General ::
+      Open a ChimeraX Session if there is one linked to an augmentation. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar storeTargetImage :: General ::
+      Copy the target image for an augmentation to an inputted folder. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar storeQRImage :: General ::
+      Save the public QR code image to a location outside the Schol-AR directory structure. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar cleanLocal :: General ::
+      Clean all local files that are associated with projects or augmentations that no longer exist on Schol-AR. </ChimeraXClassifier>
   </Classifiers>
 
 </BundleInfo>
