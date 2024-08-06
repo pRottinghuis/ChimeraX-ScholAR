@@ -66,6 +66,12 @@ class _MyAPI(BundleAPI):
         elif ci.name == "scholar storeTargetImage":
             func = cmd.store_target_image
             desc = cmd.store_target_image_desc
+        elif ci.name == "scholar storeModel":
+            func = cmd.store_model
+            desc = cmd.store_model_desc
+        elif ci.name == "scholar storeAllAugFiles":
+            func = cmd.store_all_aug_files
+            desc = cmd.store_all_aug_files_desc
         elif ci.name == "scholar storeQRImage":
             func = cmd.store_qr_image
             desc = cmd.store_qr_image_desc

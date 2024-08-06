@@ -1,7 +1,7 @@
-from Qt.QtCore import Qt
-from Qt.QtGui import QPixmap
+from Qt.QtCore import Qt, QUrl
+from Qt.QtGui import QPixmap, QDesktopServices
 from Qt.QtWidgets import (QFrame, QVBoxLayout, QWidget, QComboBox, QFormLayout, QLabel, QLineEdit,
-                          QPushButton, QHBoxLayout, QStackedLayout)
+                          QPushButton, QHBoxLayout, QStackedLayout, QSizePolicy)
 
 from .io import APIManager
 
@@ -17,12 +17,13 @@ class ScholarAugPreviewWidget(QWidget):
         # Create a horizontal layout to the preview label and the label stack for the qr and tracking score
         self.h_layout = QHBoxLayout()
 
+        # left vertical stack
+        self.left_v_layout = QVBoxLayout()
+
         # Main preview label
         self.previewLabel = QLabel()
-        self.h_layout.addWidget(self.previewLabel)
-
-        # Track-score label and QR code label with vertical layout to align it to the bottom
-        self.qrLabelLayout = QVBoxLayout()
+        self.previewLabel.setAlignment(Qt.AlignCenter)
+        self.left_v_layout.addWidget(self.previewLabel)
 
         # tracking score label
         self.tracking_score_label = QLabel("Tracking Score: 0/5")
@@ -31,18 +32,87 @@ class ScholarAugPreviewWidget(QWidget):
         self.tracking_score_label.setOpenExternalLinks(True)
         self.tracking_score_label.setTextFormat(Qt.TextFormat.RichText)
 
-        self.qrLabelLayout.addWidget(self.tracking_score_label)
+        self.left_v_layout.addWidget(self.tracking_score_label)
+
+        self.h_layout.addLayout(self.left_v_layout)
+
+        # Right vertical stack
+        self.right_v_layout = QVBoxLayout()
+
+        # Directions label
+        self.directions_label = QLabel()
+        self.directions_label.setWordWrap(True)
+        self.directions_label.setTextFormat(Qt.TextFormat.RichText)
+        self.directions_label.setOpenExternalLinks(True)
+        self.directions_label.setText(
+            'Aim your mobile device at the QR code to load augmentations. Once loaded aim the mobile device at the '
+            'target image to see augmentations. <a href="https://www.schol-ar.io/overview/">[Overview]</a>'
+        )
+        self.directions_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        self.directions_label.setMinimumSize(400, 50)  # Set a minimum size to prevent it from shrinking too much
+        self.right_v_layout.addWidget(self.directions_label)
+
+        self.pub_qr_h_layout = QHBoxLayout()
+
+        self.pub_qr_left_stack = QVBoxLayout()
+
+        self.pub_qr_title_label = QLabel("Public QR")
+        self.pub_qr_title_label.setAlignment(Qt.AlignCenter)
+        self.pub_qr_left_stack.addWidget(self.pub_qr_title_label)
 
         # QR code labels for pixmap
         self.pub_qr_label = QLabel()
         self.pub_qr_label.setFixedSize(150, 150)
-        self.qrLabelLayout.addWidget(self.pub_qr_label)
+        self.pub_qr_label.setAlignment(Qt.AlignCenter)
+        self.pub_qr_left_stack.addWidget(self.pub_qr_label)
+
+        self.pub_qr_h_layout.addLayout(self.pub_qr_left_stack)
+        # Public QR code directions
+        self.pub_qr_dirs_label = QLabel()
+        self.pub_qr_dirs_label.setWordWrap(True)
+        self.pub_qr_dirs_label.setMinimumWidth(200)
+        self.pub_qr_dirs_label.setText(
+            "Use this QR in your publication/project to allow anyone to see the augmented content. This QR is "
+            "permanent. This QR will work when scanned from your normal camera app or from within the Schol-AR app."
+        )
+        self.pub_qr_h_layout.addWidget(self.pub_qr_dirs_label)
+
+        self.right_v_layout.addLayout(self.pub_qr_h_layout)
+
+        self.admin_qr_h_layout = QHBoxLayout()
+
+        self.admin_qr_left_stack = QVBoxLayout()
+
+        self.admin_qr_title_label = QLabel("Private QR")
+        self.admin_qr_title_label.setAlignment(Qt.AlignCenter)
+        self.admin_qr_left_stack.addWidget(self.admin_qr_title_label)
+
+        # Admin QR code labels for pixmap
         self.admin_qr_label = QLabel()
         self.admin_qr_label.setFixedSize(150, 150)
-        self.qrLabelLayout.addWidget(self.admin_qr_label)
+        self.admin_qr_label.setAlignment(Qt.AlignCenter)
+        self.admin_qr_left_stack.addWidget(self.admin_qr_label)
+
+        self.admin_qr_h_layout.addLayout(self.admin_qr_left_stack)
+
+        # Admin QR code directions
+        self.admin_qr_dirs_label = QLabel()
+        self.admin_qr_dirs_label.setWordWrap(True)
+        self.admin_qr_dirs_label.setMinimumWidth(200)
+        self.admin_qr_dirs_label.setTextFormat(Qt.TextFormat.RichText)
+        self.admin_qr_dirs_label.setOpenExternalLinks(True)
+        self.admin_qr_dirs_label.setText(
+            "You can edit your augmentations with this QR. This QR is not permanent, do not give it to anyone. It is "
+            "your 'password' to edit your project and it may become inactive or change. This QR will only work when "
+            "scanned through the Schol-AR App. <a href=\"https://www.schol-ar.io/intro/\">[Details]</a>"
+        )
+
+        self.admin_qr_h_layout.addWidget(self.admin_qr_dirs_label)
+
+        self.right_v_layout.addLayout(self.admin_qr_h_layout)
 
         # Add the vertical layout containing the QR label to the horizontal layout
-        self.h_layout.addLayout(self.qrLabelLayout)
+        self.h_layout.addLayout(self.right_v_layout)
 
         # Add the horizontal layout to the main layout
         self.layout.addLayout(self.h_layout)
@@ -67,8 +137,8 @@ class ScholarAugPreviewWidget(QWidget):
         if tracking_score < 0:
             self.tracking_score_label.setText(f"Try refreshing in a moment for Tracking Score.")
         elif tracking_score < 30:
-            self.tracking_score_label.setText(f"Tracking Score: {int(tracking_score//20)}/5 <br> Image tracking may be acceptable "
-                                              f"but could be improved.<br> <a href=\"https://www.schol-ar.io/AugImages"
+            self.tracking_score_label.setText(f"Tracking Score: {int(tracking_score//20)}/5 Image tracking may be acceptable "
+                                              f"but could be improved. <a href=\"https://www.schol-ar.io/AugImages"
                                               f"\">[Info]</a>")
         else:
             self.tracking_score_label.setText(f"Tracking Score: {int(tracking_score//20)}/5")
@@ -101,9 +171,32 @@ class ScholarLoginWidget(QWidget):
         # This spacing will apply to all sub layouts
         self.main_layout.setSpacing(10)
 
-        # Label for existing user selection
-        self.existing_user_label = QLabel("Existing User")
-        self.main_layout.addWidget(self.existing_user_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        # Horizontal layout to split the tool info image + message and the existing user login form layout
+        self.info_and_existing_user = QHBoxLayout()
+
+        # Horizontal layout for image and message
+        self.info_layout = QHBoxLayout()
+
+        # Image for the tool info
+        self.tool_info_image = QLabel()
+        self.tool_info_image.setMaximumWidth(100)
+        info_pixmap = QPixmap("resources/images/scholarimage.png")
+        self.tool_info_image.setPixmap(info_pixmap.scaled(self.tool_info_image.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.info_layout.addWidget(self.tool_info_image)
+
+        # Message for the tool info
+        self.tool_info_text = QLabel()
+        self.tool_info_text.setWordWrap(True)
+        self.tool_info_text.setTextFormat(Qt.TextFormat.RichText)
+        self.tool_info_text.setOpenExternalLinks(True)
+        self.tool_info_text.setText(
+            'Schol-AR enables the embedding of 3D models and other digital media directly in publications & posters. '
+            '<a href="https://www.schol-ar.io/overview/">[Overview here]</a>')
+        self.tool_info_text.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.tool_info_text.setMinimumWidth(120)
+        self.info_layout.addWidget(self.tool_info_text)
+
+        self.info_and_existing_user.addLayout(self.info_layout)
 
         # form layout for existing user selection
         self.existing_user_selection_layout = QFormLayout()
@@ -115,12 +208,21 @@ class ScholarLoginWidget(QWidget):
 
         self.existing_user_selection_layout.addRow(self.existing_user_label, self.existing_user_combobox)
 
-        self.main_layout.addLayout(self.existing_user_selection_layout)
+        # add the existing user form hbox to the info-existing user hbox layout. Put it into a v box to bottom align
+        self.existing_user_vbox = QVBoxLayout()
+        self.existing_user_vbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.existing_user_vbox.setSpacing(0)
+        self.existing_user_vbox.addLayout(self.existing_user_selection_layout)
 
         # Submit button for existing user
         self.select_existing_user_button = QPushButton("Select Existing User")
         self.select_existing_user_button.adjustSize()
-        self.main_layout.addWidget(self.select_existing_user_button, alignment=Qt.AlignmentFlag.AlignRight)
+        self.existing_user_vbox.addWidget(self.select_existing_user_button, alignment=Qt.AlignmentFlag.AlignRight)
+
+        self.info_and_existing_user.addLayout(self.existing_user_vbox)
+
+        # add the info and existing user form hbox to main layout
+        self.main_layout.addLayout(self.info_and_existing_user)
 
         # Create new user label
         self.new_user_label = QLabel("Create New User")
@@ -142,10 +244,36 @@ class ScholarLoginWidget(QWidget):
 
         self.main_layout.addLayout(self.new_user_layout)
 
+        # API Key Directions and submit button layout
+        self.bottom_submission_hbox = QHBoxLayout()
+        self.bottom_submission_hbox.setSpacing(30)
+
+
+        # API Key Directions
+        self.api_key_directions = QLabel()
+        self.api_key_directions.setWordWrap(True)
+        self.api_key_directions.setTextFormat(Qt.TextFormat.RichText)
+        self.api_key_directions.setOpenExternalLinks(True)
+        self.api_key_directions.setText(
+            'To get an API token, first <a href="https://www.schol-ar.io/register/">sign up</a> and <a '
+            'href="https://www.schol-ar.io/login/">log in</a> (free).'
+            'Second click profile and then Get API Token.'
+        )
+        self.api_key_directions.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        # calculate the min height required for the label to wrap text to a second line
+        font_metrics = self.api_key_directions.fontMetrics()
+        line_height = font_metrics.lineSpacing()
+        min_height = line_height * 2
+        self.api_key_directions.setMinimumHeight(min_height)
+        self.bottom_submission_hbox.addWidget(self.api_key_directions)
+
         # Submit button for new user
         self.submit_new_user_button = QPushButton("Submit")
         self.submit_new_user_button.adjustSize()
-        self.main_layout.addWidget(self.submit_new_user_button, alignment=Qt.AlignmentFlag.AlignRight)
+        self.submit_new_user_button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.bottom_submission_hbox.addWidget(self.submit_new_user_button, alignment=Qt.AlignmentFlag.AlignRight)
+
+        self.main_layout.addLayout(self.bottom_submission_hbox)
 
     def refresh_iu(self):
         self.existing_user_combobox.clear()
@@ -368,14 +496,10 @@ class ScholarAugEditWidget(QWidget):
         # Horizontal layout to split the augmentation preview and the action buttons
         self.preview_action_layout = QHBoxLayout()
 
-        # Create a vertical layout for the augmentation preview
-        self.preview_layout = QVBoxLayout()
-
         self.target_image_pixmap_label = QLabel()
-        self.target_image_pixmap_label.setMaximumWidth(400)
-        self.preview_layout.addWidget(self.target_image_pixmap_label)
-
-        self.preview_action_layout.addLayout(self.preview_layout)
+        self.target_image_pixmap_label.setFixedSize(350, 200)
+        self.target_image_pixmap_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.preview_action_layout.addWidget(self.target_image_pixmap_label)
 
         # Create all the buttons for the augmentation actions
         self.augmentation_action_layout = QVBoxLayout()
@@ -383,13 +507,13 @@ class ScholarAugEditWidget(QWidget):
         self.update_target_image_button = QPushButton("Update Target Image")
         self.update_model_button = QPushButton("Update Model")
         self.preview_aug_button = QPushButton("Preview")
-        self.store_target_image_button = QPushButton("Store Target Image")
+        self.save_files_locally_button = QPushButton("Save Files Locally")
         self.save_and_close_button = QPushButton("Save and Close")
 
         self.augmentation_action_layout.addWidget(self.update_target_image_button)
         self.augmentation_action_layout.addWidget(self.update_model_button)
         self.augmentation_action_layout.addWidget(self.preview_aug_button)
-        self.augmentation_action_layout.addWidget(self.store_target_image_button)
+        self.augmentation_action_layout.addWidget(self.save_files_locally_button)
         self.augmentation_action_layout.addWidget(self.save_and_close_button)
 
         self.preview_action_layout.addLayout(self.augmentation_action_layout)
@@ -410,16 +534,20 @@ class ScholarAugEditWidget(QWidget):
     def set_augmentation_title(self, title):
         self.augmentation_title_label.setText(f"Selected Augmentation: {title}")
 
-    def set_preview_image(self, image_path):
-        self.target_image_pixmap_label.clear()
-        pixmap = QPixmap(image_path)
-        self.target_image_pixmap_label.setPixmap(pixmap)
-
     def update_target_image_display(self, image_path):
         self.target_image_pixmap_label.clear()
-        pixmap = QPixmap(image_path).scaledToWidth(
-            self.target_image_pixmap_label.maximumWidth(), Qt.TransformationMode.SmoothTransformation)
-        self.target_image_pixmap_label.setPixmap(pixmap)
+
+        pixmap = QPixmap(image_path)
+        # Find if the width or height is more restrictive and scale to that
+        max_width = self.target_image_pixmap_label.maximumWidth()
+        max_height = self.target_image_pixmap_label.maximumHeight()
+        if pixmap.width() / max_width > pixmap.height() / max_height:
+            scaled_pixmap = pixmap.scaledToWidth(max_width, Qt.TransformationMode.SmoothTransformation)
+        else:
+            scaled_pixmap = pixmap.scaledToHeight(max_height, Qt.TransformationMode.SmoothTransformation)
+
+        self.target_image_pixmap_label.setPixmap(scaled_pixmap)
+        return
 
     @property
     def update_target_image_signal(self):
@@ -434,8 +562,8 @@ class ScholarAugEditWidget(QWidget):
         return self.preview_aug_button.clicked
 
     @property
-    def store_target_image_signal(self):
-        return self.store_target_image_button.clicked
+    def save_files_locally_signal(self):
+        return self.save_files_locally_button.clicked
 
     @property
     def save_and_close_signal(self):
@@ -472,6 +600,12 @@ class ScholarMainLayout(QVBoxLayout):
 
         self.max_nav_button_width = 150
 
+        self.view_at_scholar_button = QPushButton("View at Schol-AR.io")
+        self.view_at_scholar_button.adjustSize()
+        self.view_at_scholar_button.setMaximumWidth(self.max_nav_button_width)
+        self.view_at_scholar_button.clicked.connect(
+            lambda: QDesktopServices().openUrl(QUrl("https://www.schol-ar.io/MyAugmentations")))
+
         self.login_button = QPushButton("Login")
         self.login_button.adjustSize()
         self.login_button.setMaximumWidth(self.max_nav_button_width)
@@ -488,6 +622,7 @@ class ScholarMainLayout(QVBoxLayout):
         self.store_qr_button.adjustSize()
         self.store_qr_button.setMaximumWidth(self.max_nav_button_width)
 
+        self.lower_menu_layout.addWidget(self.view_at_scholar_button)
         self.lower_menu_layout.addWidget(self.login_button)
         self.lower_menu_layout.addWidget(self.project_button)
         self.lower_menu_layout.addWidget(self.augmentation_button)
@@ -502,21 +637,25 @@ class ScholarMainLayout(QVBoxLayout):
         self.main_stack.setCurrentIndex(widget)
         
         if widget == ScholarMainLayout.LOGIN:
+            self.view_at_scholar_button.hide()
             self.login_button.hide()
             self.project_button.hide()
             self.augmentation_button.hide()
             self.store_qr_button.hide()
         elif widget == ScholarMainLayout.PROJECT_SELECT:
+            self.view_at_scholar_button.show()
             self.login_button.show()
             self.project_button.hide()
             self.augmentation_button.hide()
             self.store_qr_button.hide()
         elif widget == ScholarMainLayout.AUGMENTATION_SELECT:
+            self.view_at_scholar_button.show()
             self.login_button.show()
             self.project_button.show()
             self.augmentation_button.hide()
             self.store_qr_button.show()
         elif widget == ScholarMainLayout.AUGMENTATION_EDIT:
+            self.view_at_scholar_button.show()
             self.login_button.show()
             self.project_button.show()
             self.augmentation_button.show()

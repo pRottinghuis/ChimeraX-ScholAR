@@ -1,7 +1,7 @@
 import os.path
 import shutil
 
-from chimerax.core.commands import CmdDesc, StringArg, BoolArg, SaveFileNameArg
+from chimerax.core.commands import CmdDesc, StringArg, BoolArg, SaveFileNameArg, SaveFolderNameArg
 from chimerax.core.commands import run
 
 from .io import ScARFileManager, APIManager
@@ -385,7 +385,7 @@ def store_target_image(session, username: str, project_title: str, augmentation_
 
     if target_image_path is not None:
         # if the target image path exists, and the save directory exists, copy the file
-        shutil.copyfile(target_image_path, format_to_png_file(save_location))
+        shutil.copyfile(target_image_path, format_file_extension(save_location, ".png"))
 
 
 store_target_image_desc = CmdDesc(
@@ -394,6 +394,60 @@ store_target_image_desc = CmdDesc(
               ('augmentation_title', StringArg),
               ('save_location', SaveFileNameArg)],
     synopsis="Save the target image to a location outside the Schol-AR directory structure"
+)
+
+
+def store_model(session, username: str, project_title: str, augmentation_title: str, save_location: str):
+    """
+    ChimeraX command to save the augmented model to a location outside the Schol-AR directory structure.
+    """
+
+    if not usr_proj_aug_exists(username, project_title, augmentation_title):
+        return
+
+    model_path = ScARFileManager.get_auggmentation_model_file_path(username, project_title, augmentation_title)
+    if model_path is None:
+        run(session, f"scholar downloadAugFiles \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
+                     f"targetImage False augmentedFile True")
+        model_path = ScARFileManager.get_auggmentation_model_file_path(username, project_title, augmentation_title)
+
+    if model_path is not None:
+        # if the model path exists, and the save directory exists, copy the file
+        shutil.copyfile(model_path, format_file_extension(save_location, ".glb"))
+
+
+store_model_desc = CmdDesc(
+    required=[('username', StringArg),
+              ('project_title', StringArg),
+              ('augmentation_title', StringArg),
+              ('save_location', SaveFileNameArg)],
+    synopsis="Save the augmented model to a location outside the Schol-AR directory structure"
+)
+
+
+def store_all_aug_files(session, username: str, project_title: str, augmentation_title: str, save_folder: str):
+    """
+    ChimeraX command to save all the augmentation files to a location outside the Schol-AR directory structure.
+    """
+
+    if not usr_proj_aug_exists(username, project_title, augmentation_title):
+        return
+    os.makedirs(save_folder, exist_ok=True)
+    safe_aug_filename = APIManager.sanitize_file_name(augmentation_title)
+    model_file_path = os.path.join(save_folder, f"{safe_aug_filename}.glb")
+    target_image_file_path = os.path.join(save_folder, f"{safe_aug_filename}.png")
+    run(session, f"scholar storeModel \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
+                 f"\"{model_file_path}\"")
+    run(session, f"scholar storeTargetImage \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
+                 f"\"{target_image_file_path}\"")
+
+
+store_all_aug_files_desc = CmdDesc(
+    required=[('username', StringArg),
+              ('project_title', StringArg),
+              ('augmentation_title', StringArg),
+              ('save_folder', SaveFolderNameArg)],
+    synopsis="Save all augmentation files to a location outside the Schol-AR directory structure"
 )
 
 
@@ -412,7 +466,7 @@ def store_qr_image(session, username: str, project_title: str, save_location: st
 
     if pub_qr_image_path is not None:
         # if the public QR code image path exists, and the save directory exists, copy the file
-        shutil.copyfile(pub_qr_image_path, format_to_png_file(save_location))
+        shutil.copyfile(pub_qr_image_path, format_file_extension(save_location, ".png"))
 
 
 store_qr_image_desc = CmdDesc(
@@ -423,12 +477,12 @@ store_qr_image_desc = CmdDesc(
 )
 
 
-def format_to_png_file(file_path: str):
+def format_file_extension(file_path: str, file_extension):
     """
-    If the file path is not a .png file, convert the file path string to have the .png file extension at the end.
+    Ensure that a file path has the desired file extension. The extension must be a valid extension with a period.
     """
-    if not file_path.endswith(".png"):
-        return file_path + ".png"
+    if not file_path.endswith(file_extension):
+        return file_path + file_extension
     return file_path
 
 

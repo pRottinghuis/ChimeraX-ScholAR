@@ -56,7 +56,7 @@ class ChimeraXScholARTool(ToolInstance):
             lambda: self.update_aug_files(target_image=False, augmented_file=True))
         aug_edit_widget.preview_aug_signal.connect(lambda: self.preview_augmentation())
         aug_edit_widget.save_and_close_signal.connect(lambda: self.augmentation_back_page())
-        aug_edit_widget.store_target_image_signal.connect(lambda: self.store_target_image())
+        aug_edit_widget.save_files_locally_signal.connect(lambda: self.store_files_locally())
 
         # Main layout navigation signals
         self.main_layout.return_login_page_signal.connect(lambda: self.login_back_page())
@@ -307,11 +307,12 @@ class ChimeraXScholARTool(ToolInstance):
             preview_window.ui_area, target_image_path, pub_qr_image_path, admin_qr_image_path, tracking_score)
         preview_window.manage(None)
 
-    def store_target_image(self):
+    def store_files_locally(self):
         if self.active_user is None or self.active_project is None or self.active_augmentation is None:
             return
 
-        run(self.session, f"scholar storeTargetImage \"{self.active_user}\" \"{self.active_project}\" \"{self.active_augmentation}\" browse")
+        run(self.session, f"scholar storeAllAugFiles \"{self.active_user}\" \"{self.active_project}\" "
+                          f"\"{self.active_augmentation}\" browse")
 
     def store_qr_image(self):
         if self.active_user is None or self.active_project is None:

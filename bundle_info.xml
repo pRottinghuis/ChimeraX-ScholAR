@@ -30,6 +30,10 @@
     <DataFile>docs/user/tools/chimerax-scholar.html</DataFile>
   </DataFiles>
 
+  <ExtraFiles>
+    <ExtraFile source="resources/images/scholarimage.png">resources/images/scholarimage.png</ExtraFile>
+  </ExtraFiles>
+
   <Classifiers>
     <!-- Development Status should be compatible with bundle version number -->
     <PythonClassifier>Development Status :: 3 - Alpha</PythonClassifier>
@@ -64,7 +68,13 @@
       Open a ChimeraX Session if there is one linked to an augmentation. </ChimeraXClassifier>
 
     <ChimeraXClassifier>ChimeraX :: Command :: scholar storeTargetImage :: General ::
-      Copy the target image for an augmentation to an inputted folder. </ChimeraXClassifier>
+      Copy the target image for an augmentation to an inputted file target. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar storeModel :: General ::
+      Copy the model file for an augmentation to an inputted file target. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar storeAllAugFiles :: General ::
+      Copy the all augmentation files for an augmentation to an inputted folder. </ChimeraXClassifier>
 
     <ChimeraXClassifier>ChimeraX :: Command :: scholar storeQRImage :: General ::
       Save the public QR code image to a location outside the Schol-AR directory structure. </ChimeraXClassifier>

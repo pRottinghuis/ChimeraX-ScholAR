@@ -190,7 +190,10 @@ class APIManager:
         filename = os.path.basename(path)
 
         # Protection against malicious file names
+        return APIManager.sanitize_file_name(filename)
 
+    @staticmethod
+    def sanitize_file_name(filename: str) -> str:
         # Remove or replace special characters
         sanitized_file_name = re.sub(r'[<>:"/\\|?*\x00-\x1F]', '_', filename)
         # Replace path traversal
@@ -678,6 +681,18 @@ class ScARFileManager:
         first_file = cls.get_first_file(target_dir)
         if first_file:
             return os.path.join(target_dir, first_file)
+        return None
+
+    @classmethod
+    def get_auggmentation_model_file_path(cls, username: str, project_title: str, augmentation_title: str) -> str | None:
+        """
+        Find and return the full path to the first file in the augmentation dir structure model dir.
+        If there is no file in that dir return none.
+        """
+        model_dir = cls.aug_model_dir(username, project_title, augmentation_title)
+        first_file = cls.get_first_file(model_dir)
+        if first_file:
+            return os.path.join(model_dir, first_file)
         return None
 
     @classmethod
