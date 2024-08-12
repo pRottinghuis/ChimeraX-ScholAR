@@ -1,3 +1,5 @@
+import os
+
 from Qt.QtCore import Qt, QUrl
 from Qt.QtGui import QPixmap, QDesktopServices
 from Qt.QtWidgets import (QFrame, QVBoxLayout, QWidget, QComboBox, QFormLayout, QLabel, QLineEdit,
@@ -180,7 +182,8 @@ class ScholarLoginWidget(QWidget):
         # Image for the tool info
         self.tool_info_image = QLabel()
         self.tool_info_image.setMaximumWidth(100)
-        info_pixmap = QPixmap("resources/images/scholarimage.png")
+        info_im_path = os.path.join(os.path.dirname(__file__), 'resources', 'images', 'scholarimage.png')
+        info_pixmap = QPixmap(info_im_path)
         self.tool_info_image.setPixmap(info_pixmap.scaled(self.tool_info_image.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.info_layout.addWidget(self.tool_info_image)
 
@@ -606,7 +609,7 @@ class ScholarMainLayout(QVBoxLayout):
         self.view_at_scholar_button.clicked.connect(
             lambda: QDesktopServices().openUrl(QUrl("https://www.schol-ar.io/MyAugmentations")))
 
-        self.login_button = QPushButton("Login")
+        self.login_button = QPushButton("New Login")
         self.login_button.adjustSize()
         self.login_button.setMaximumWidth(self.max_nav_button_width)
 
