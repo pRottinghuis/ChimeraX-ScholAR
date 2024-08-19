@@ -324,6 +324,8 @@ class ChimeraXScholARTool(ToolInstance):
             return
         # Use dialog to get the file path to save the qr image to
         qr_im_fp = self.save_in_png_file()
+        if qr_im_fp is None:
+            return
         run(self.session, f"scholar storeQRImage \"{self.active_user}\" \"{self.active_project}\" \"{qr_im_fp}\"")
 
     def fill_context_menu(self, menu, x, y):
