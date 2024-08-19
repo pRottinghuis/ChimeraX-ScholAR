@@ -2,6 +2,7 @@ from Qt.QtGui import QAction
 from chimerax.core.commands import run
 from chimerax.core.tools import ToolInstance
 from chimerax.ui import MainToolWindow
+from chimerax.ui.open_save import SaveDialog
 
 from .io import ScARFileManager, APIManager
 from .scholar_ui import ScholarMainLayout, ScholarLoginWidget, ScholarProjectWidget, ScholarSelAugWidget, \
@@ -311,19 +312,49 @@ class ChimeraXScholARTool(ToolInstance):
         if self.active_user is None or self.active_project is None or self.active_augmentation is None:
             return
 
+        file_path = self.save_in_folder()
+        if file_path is None:
+            return
+
         run(self.session, f"scholar storeAllAugFiles \"{self.active_user}\" \"{self.active_project}\" "
-                          f"\"{self.active_augmentation}\" browse")
+                          f"\"{self.active_augmentation}\" \"{file_path}\"")
 
     def store_qr_image(self):
         if self.active_user is None or self.active_project is None:
             return
-
-        run(self.session, f"scholar storeQRImage \"{self.active_user}\" \"{self.active_project}\" browse")
+        # Use dialog to get the file path to save the qr image to
+        qr_im_fp = self.save_in_png_file()
+        run(self.session, f"scholar storeQRImage \"{self.active_user}\" \"{self.active_project}\" \"{qr_im_fp}\"")
 
     def fill_context_menu(self, menu, x, y):
         clean_local_action = QAction("Clean Project Files", menu)
         clean_local_action.triggered.connect(lambda *args: self.clean_local())
         menu.addAction(clean_local_action)
+
+    def save_in_png_file(self) -> str | None:
+        """
+        Opens a save dialog for the user to select an image file to save to
+        :return: str filename path for save or None if nothing was selected or something went wrong.
+        """
+        save_dialog = SaveDialog(self.session, parent=self.tool_window.ui_area)
+        save_dialog.setNameFilter("PNG (*.png)")
+        if save_dialog.exec():
+            file_path = save_dialog.selectedFiles()[0]
+            return file_path
+        return None
+
+    def save_in_folder(self) -> str | None:
+        """
+        Opens a save dialog for the user to select a folder to save the files in.
+        :return: str dir path or None if nothing was selected or something went wrong.
+        """
+        save_dialog = SaveDialog(self.session, parent=self.tool_window.ui_area)
+        save_dialog.setFileMode(SaveDialog.Directory)
+        save_dialog.setOption(SaveDialog.ShowDirsOnly, True)
+        if save_dialog.exec():
+            folder_path = save_dialog.selectedFiles()[0]
+            return folder_path
+        return None
 
     def clean_local(self):
         if self.active_user is not None:

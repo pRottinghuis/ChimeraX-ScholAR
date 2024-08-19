@@ -427,7 +427,8 @@ store_model_desc = CmdDesc(
 
 def store_all_aug_files(session, username: str, project_title: str, augmentation_title: str, save_folder: str):
     """
-    ChimeraX command to save all the augmentation files to a location outside the Schol-AR directory structure.
+    ChimeraX command to save all the augmentation files and qr code to a location outside the Schol-AR directory
+    structure.
     """
 
     if not usr_proj_aug_exists(username, project_title, augmentation_title):
@@ -436,10 +437,13 @@ def store_all_aug_files(session, username: str, project_title: str, augmentation
     safe_aug_filename = APIManager.sanitize_file_name(augmentation_title)
     model_file_path = os.path.join(save_folder, f"{safe_aug_filename}.glb")
     target_image_file_path = os.path.join(save_folder, f"{safe_aug_filename}.png")
+    # Use the project title as the qr image file name. The qr title is a unique identifier and is confusing.
+    qr_image_file_path = os.path.join(save_folder, f"{project_title}_qr.png")
     run(session, f"scholar storeModel \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
                  f"\"{model_file_path}\"")
     run(session, f"scholar storeTargetImage \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
                  f"\"{target_image_file_path}\"")
+    run(session, f"scholar storeQR \"{username}\" \"{project_title}\" \"{qr_image_file_path}\"")
 
 
 store_all_aug_files_desc = CmdDesc(
@@ -454,6 +458,7 @@ store_all_aug_files_desc = CmdDesc(
 def store_qr_image(session, username: str, project_title: str, save_location: str):
     """
     ChimeraX command to save the public QR code image to a location outside the Schol-AR directory structure.
+    :param save_location: File name for the qr image save. Will be formatted into a .png file.
     """
 
     if not usr_project_exists(username, project_title):
