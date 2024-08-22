@@ -1,3 +1,5 @@
+from typing import Optional
+
 from Qt.QtGui import QAction
 from chimerax.core.commands import run
 from chimerax.core.tools import ToolInstance
@@ -333,7 +335,7 @@ class ChimeraXScholARTool(ToolInstance):
         clean_local_action.triggered.connect(lambda *args: self.clean_local())
         menu.addAction(clean_local_action)
 
-    def save_in_png_file(self) -> str | None:
+    def save_in_png_file(self) -> Optional[str]:
         """
         Opens a save dialog for the user to select an image file to save to
         :return: str filename path for save or None if nothing was selected or something went wrong.
@@ -345,7 +347,7 @@ class ChimeraXScholARTool(ToolInstance):
             return file_path
         return None
 
-    def save_in_folder(self) -> str | None:
+    def save_in_folder(self) -> Optional[str]:
         """
         Opens a save dialog for the user to select a folder to save the files in.
         :return: str dir path or None if nothing was selected or something went wrong.

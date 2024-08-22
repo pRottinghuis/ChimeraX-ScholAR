@@ -2,6 +2,7 @@ import json
 import os
 import re
 import shutil
+from typing import Optional
 from urllib.parse import urlparse
 
 import requests
@@ -37,7 +38,7 @@ class APIManager:
     MAX_FILE_SIZE_MB = 30
 
     @staticmethod
-    def try_api_request(request_fn, display_errors: bool, *args, **kwargs) -> dict | None:
+    def try_api_request(request_fn, display_errors: bool, *args, **kwargs) -> Optional[dict]:
         """
         Try to make an API request and return the response if successful. Print an error message if the request fails.
         :param display_errors: Should there be errors printed on a failed request
@@ -77,7 +78,7 @@ class APIManager:
             return True
 
     @staticmethod
-    def list_arp_projects(api_token: str) -> dict | None:
+    def list_arp_projects(api_token: str) -> Optional[dict]:
         """
         Make a call to the Schol-AR API to list all projects
         :return: JSON response from the API. None if failed response
@@ -87,7 +88,7 @@ class APIManager:
         return APIManager.try_api_request(requests.get, True, url, headers=headers)
 
     @staticmethod
-    def create_project(api_token: str, project_title: str, project_type: str, disc_url: str) -> dict | None:
+    def create_project(api_token: str, project_title: str, project_type: str, disc_url: str) -> Optional[dict]:
         """
         Make a call to the Schol-AR API to create a new project
         :return: JSON response from the API. None if failed response
@@ -106,7 +107,7 @@ class APIManager:
         return APIManager.try_api_request(requests.post, True, url, headers=headers, json=data)
 
     @staticmethod
-    def get_qr_data(token: str, qr_string: str) -> dict | None:
+    def get_qr_data(token: str, qr_string: str) -> Optional[dict]:
         """
         Make call to API to retrieve cloud urls for qr code images
         :return: JSON response from the API. None if failed response
@@ -116,7 +117,7 @@ class APIManager:
         return APIManager.try_api_request(requests.get, True, url, headers=headers)
 
     @staticmethod
-    def list_augs(api_token: str, qr_string: str) -> dict | None:
+    def list_augs(api_token: str, qr_string: str) -> Optional[dict]:
         """
         Make a call to the Schol-AR API to list all augmentations for a project
         :return: JSON response from the API. None if failed response
@@ -127,7 +128,7 @@ class APIManager:
 
     @staticmethod
     def create_augmentation(
-            token: str, qr_string: str, augmentation_title: str, augmentation_type: str) -> dict | None:
+            token: str, qr_string: str, augmentation_title: str, augmentation_type: str) -> Optional[dict]:
         """
         Make a call to the Schol-AR API to create a new augmentation
         :return: JSON response from the API. None if failed response
@@ -142,7 +143,7 @@ class APIManager:
 
     @staticmethod
     def edit_augmentation(token: str, qrstring: str, aug_id: str, file_path: str,
-                          target_update: bool) -> dict | None:
+                          target_update: bool) -> Optional[dict]:
         if not ScARFileManager.check_file_size(file_path):
             print(f"File size too large. Must be less than {APIManager.MAX_FILE_SIZE_MB}MB")
             return None
@@ -352,7 +353,7 @@ class ScARFileManager:
         cls.active_user_key = (username, api_token)
 
     @classmethod
-    def get_user_token(cls, username: str) -> str | None:
+    def get_user_token(cls, username: str) -> Optional[str]:
         """
         Get the api token from a username out of the user save file otherwise return None
         """
@@ -370,7 +371,7 @@ class ScARFileManager:
         return api_token
 
     @classmethod
-    def get_users_info(cls) -> dict | None:
+    def get_users_info(cls) -> Optional[dict]:
         """
         :return: users save file as a json dictionary
         """
@@ -392,7 +393,7 @@ class ScARFileManager:
         return os.path.join(cls.BASE_DIR, username, cls.PROJECT_INFO_FILE)
 
     @classmethod
-    def get_projects_info(cls, username: str) -> dict | None:
+    def get_projects_info(cls, username: str) -> Optional[dict]:
         """
         :return: projects save file as a json dictionary
         """
@@ -426,7 +427,7 @@ class ScARFileManager:
             json.dump(list_arp_response, file, indent=4)
 
     @classmethod
-    def get_project(cls, username: str, project_title: str) -> dict | None:
+    def get_project(cls, username: str, project_title: str) -> Optional[dict]:
         """
         Retrieve a projects json data from the user's projects save file.
         :return: project json data or None if the project does not exist in the save file
@@ -455,7 +456,7 @@ class ScARFileManager:
         return [project.get(APIManager.PROJECT_TITLE_KEY) for project in projects_info]
 
     @classmethod
-    def get_project_qrstring(cls, username: str, project_title: str) -> str | None:
+    def get_project_qrstring(cls, username: str, project_title: str) -> Optional[str]:
         """
         :return: QRString for a project or None if the project does not exist in the user's project save file
         """
@@ -487,7 +488,7 @@ class ScARFileManager:
         return qr_dir
 
     @classmethod
-    def get_qr_file(cls, username: str, project_title: str, admin: bool) -> str | None:
+    def get_qr_file(cls, username: str, project_title: str, admin: bool) -> Optional[str]:
         """
         Get the full path to the qr code file for a project
         :return: Path to the qr code file or None if the project does not exist in the user's project save file
@@ -539,7 +540,7 @@ class ScARFileManager:
         cls.aug_session_dir(username, project_title, augmentation_title)
 
     @classmethod
-    def get_augmentation(cls, username: str, project_title: str, augmentation_title: str) -> dict | None:
+    def get_augmentation(cls, username: str, project_title: str, augmentation_title: str) -> Optional[dict]:
         """
         :return: Json data for an augmentation or None if the augmentation does not exist in the project's augmentations
          save file
@@ -566,7 +567,7 @@ class ScARFileManager:
         return [aug.get(APIManager.AUGMENTATION_TITLE_KEY) for aug in augs_info]
 
     @classmethod
-    def get_augs_info(cls, username, project_title) -> dict | None:
+    def get_augs_info(cls, username, project_title) -> Optional[dict]:
         """
         :return: augmentations save file as a json dictionary
         """
@@ -641,7 +642,7 @@ class ScARFileManager:
         return os.path.join(cls.aug_session_dir(username, project_title, augmentation_title), session_name)
 
     @classmethod
-    def get_augmentation_target_url(cls, username: str, project_title: str, augmentation_title: str) -> str | None:
+    def get_augmentation_target_url(cls, username: str, project_title: str, augmentation_title: str) -> Optional[str]:
         """
         :return: URL for the target image of an augmentation or None if the augmentation does not exist in the project's
         augmentations save file
@@ -650,7 +651,7 @@ class ScARFileManager:
         return aug.get(APIManager.AUGMENTATION_TARGET_KEY)
 
     @classmethod
-    def get_augmentation_model_url(cls, username: str, project_title: str, augmentation_title: str) -> str | None:
+    def get_augmentation_model_url(cls, username: str, project_title: str, augmentation_title: str) -> Optional[str]:
         """
         :return: URL for the augmented file of an augmentation or None if the augmentation does not exist in the
         project's augmentations save file
@@ -672,7 +673,7 @@ class ScARFileManager:
 
     @classmethod
     def get_augmentation_target_image_path(cls, username: str, project_title: str,
-                                           augmentation_title: str) -> str | None:
+                                           augmentation_title: str) -> Optional[str]:
         """
         Find and return the full path to the first file in the augmentation dir structure target image dir.
         If there is no file in that dir return none.
@@ -684,7 +685,7 @@ class ScARFileManager:
         return None
 
     @classmethod
-    def get_auggmentation_model_file_path(cls, username: str, project_title: str, augmentation_title: str) -> str | None:
+    def get_auggmentation_model_file_path(cls, username: str, project_title: str, augmentation_title: str) -> Optional[str]:
         """
         Find and return the full path to the first file in the augmentation dir structure model dir.
         If there is no file in that dir return none.
@@ -783,7 +784,7 @@ class ScARFileManager:
         shutil.copy(full_file_for_copy_path, destination_file_path)
 
     @classmethod
-    def get_first_file(cls, search_dir: str) -> str | None:
+    def get_first_file(cls, search_dir: str) -> Optional[str]:
         """
         Get the first file name in a directory. If the directory is empty, return None.
         :param search_dir: A directory that exists.

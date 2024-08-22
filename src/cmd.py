@@ -1,5 +1,6 @@
 import os.path
 import shutil
+from typing import Union
 
 from chimerax.core.commands import CmdDesc, StringArg, BoolArg, SaveFileNameArg, SaveFolderNameArg
 from chimerax.core.commands import run
@@ -7,7 +8,7 @@ from chimerax.core.commands import run
 from .io import ScARFileManager, APIManager
 
 
-def login(session, username: str, api_token: str | None = None):
+def login(session, username: str, api_token: Union[str, None] = None):
     """
     ChimeraX command that is used to log in a Schol-AR chimerax user. If the user does not exist, the users name and
     Schol-AR api token will be saved together into a save file that is used to keep track of all users. If the user
@@ -308,7 +309,7 @@ def aug_save_and_update(session, token: str, username: str, project_title: str, 
     ScARFileManager.update_augs_info(username, project_title)
 
 
-def save_aug_session(session, username: str, project_title: str, augmentation_title: str, file_path: str | None = None):
+def save_aug_session(session, username: str, project_title: str, augmentation_title: str, file_path: Union[str, None] = None):
     """
     ChimeraX command to save a .cxs session file to the augmentation's directory.
     :param file_path: Path to a target .cxs file to save. If None or doesn't exist, the current session will be saved.
