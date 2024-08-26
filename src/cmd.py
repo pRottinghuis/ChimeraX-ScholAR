@@ -62,6 +62,11 @@ def project(session, username: str, project_title: str, project_type: str = "oth
         session.logger.info("Invalid project title. Project titles can only contain letters, numbers, and spaces.")
         return
 
+    if project_type not in APIManager.PROJECT_TYPES.values():
+        project_types = ", ".join(APIManager.PROJECT_TYPES.values())
+        session.logger.info(f"Invalid project type. Project type must be one of: {project_types}")
+        return
+
     # set target project if param project_title exists in the user's project list. None means it does not exist
     target_project: dict = ScARFileManager.get_project(username, project_title)
 
@@ -149,6 +154,10 @@ def augmentation(session, username: str, project_title: str, augmentation_title:
     if not valid_input_string(augmentation_title):
         session.logger.info("Invalid augmentation title. Augmentation titles can contain only letters, numbers, and "
                             "spaces.")
+        return
+
+    if augmentation_type != "model":
+        session.logger.info("Invalid augmentation type. Only supported augmentation type is 'model'.")
         return
 
     # check if the aug needs to be created or if it exists in the project info save file
@@ -311,7 +320,8 @@ def aug_save_and_update(session, token: str, username: str, project_title: str, 
 
 def save_aug_session(session, username: str, project_title: str, augmentation_title: str, file_path: Union[str, None] = None):
     """
-    ChimeraX command to save a .cxs session file to the augmentation's directory.
+    ChimeraX command to save a .cxs session file to the augmentation's directory. The session file will be saved/copied
+    into the augmentation's directory.
     :param file_path: Path to a target .cxs file to save. If None or doesn't exist, the current session will be saved.
     """
 
