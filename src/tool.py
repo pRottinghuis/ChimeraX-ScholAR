@@ -98,6 +98,7 @@ class ChimeraXScholARTool(ToolInstance):
 
     def select_augmentation_page(self):
         self.main_layout.get_aug_sel_widget().refresh_ui()
+        self.main_layout.get_aug_sel_widget().set_project_title(self.active_project)
         augmentation_titles = ScARFileManager.list_existing_aug_titles(self.active_user, self.active_project)
         self.main_layout.get_aug_sel_widget().set_existing_augmentations(augmentation_titles)
         self.main_layout.set_active_widget(ScholarMainLayout.AUGMENTATION_SELECT)

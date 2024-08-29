@@ -8,6 +8,8 @@ from chimerax.core.commands import run
 from .io import ScARFileManager, APIManager
 
 
+# TODO make all commands run under this bundles commands not appear in the log by default
+
 def login(session, username: str, api_token: Union[str, None] = None):
     """
     ChimeraX command that is used to log in a Schol-AR chimerax user. If the user does not exist, the users name and
@@ -138,7 +140,8 @@ download_qr_desc = CmdDesc(
 )
 
 
-def augmentation(session, username: str, project_title: str, augmentation_title: str, augmentation_type: str = 'model'):
+def augmentation(session, username: str, project_title: str, augmentation_title: str, augmentation_type: str = 'model',
+                 verbose: bool = False):
     """
     ChimeraX command that is used to prepare an augmentation to be able to download associated files. This
     Command can be used to select an existing augmentation from Schol-AR remote data to set up the local directory
@@ -190,8 +193,8 @@ def augmentation(session, username: str, project_title: str, augmentation_title:
 
         run(session,
             f"scholar uploadAugFiles \"{username}\" \"{project_title}\" \"{augmentation_title}\" target_image True "
-            f"augmented_file True"
-            )
+            f"augmented_file True verbose {verbose}"
+            , log=verbose)
 
     else:
         # the augmentation already exists in the project info save file
@@ -203,7 +206,8 @@ augmentation_desc = CmdDesc(
     required=[('username', StringArg),
               ('project_title', StringArg),
               ('augmentation_title', StringArg)],
-    keyword=[('augmentation_type', StringArg)],
+    keyword=[('augmentation_type', StringArg),
+             ('verbose', BoolArg)],
     synopsis="Create a new augmentation for a project"
 )
 
@@ -252,13 +256,14 @@ download_aug_files_desc = CmdDesc(
               ('project_title', StringArg),
               ('augmentation_title', StringArg)],
     keyword=[('target_image', BoolArg),
-             ('augmented_file', BoolArg)],
+             ('augmented_file', BoolArg),
+             ('verbose', BoolArg)],
     synopsis="Download augmentation files"
 )
 
 
 def upload_aug_files(session, username: str, project_title: str, augmentation_title: str,
-                     target_image: bool = False, augmented_file: bool = True):
+                     target_image: bool = False, augmented_file: bool = True, verbose: bool = False):
     """
     ChimeraX command to sync local files to the remote directory structure. This command is used to upload the
     selected augmentation files into the Schol-AR directory structure.
@@ -276,13 +281,13 @@ def upload_aug_files(session, username: str, project_title: str, augmentation_ti
         ScARFileManager.empty_dir(model_dir)
         model_file = ScARFileManager.aug_model_file(username, project_title, augmentation_title)
         aug_save_and_update(session, token, username, project_title, augmentation_title, model_file,
-                            target_update=False)
+                            target_update=False, verbose=verbose)
     if target_image:
         target_image_dir = ScARFileManager.aug_target_dir(username, project_title, augmentation_title)
         ScARFileManager.empty_dir(target_image_dir)
         target_image_file = ScARFileManager.aug_target_file(username, project_title, augmentation_title)
         aug_save_and_update(session, token, username, project_title, augmentation_title, target_image_file,
-                            target_update=True)
+                            target_update=True, verbose=verbose)
 
 
 upload_aug_files_desc = CmdDesc(
@@ -290,13 +295,14 @@ upload_aug_files_desc = CmdDesc(
               ('project_title', StringArg),
               ('augmentation_title', StringArg)],
     keyword=[('target_image', BoolArg),
-             ('augmented_file', BoolArg)],
+             ('augmented_file', BoolArg),
+             ('verbose', BoolArg)],
     synopsis="Upload augmentation files"
 )
 
 
 def aug_save_and_update(session, token: str, username: str, project_title: str, augmentation_title: str,
-                        file_path: str, target_update: bool):
+                        file_path: str, target_update: bool, verbose: bool = False):
     """
     Save and update scholar with one file
     :param file_path: the path to the file that will be saved. Contains file type extension for the save command.
@@ -305,7 +311,7 @@ def aug_save_and_update(session, token: str, username: str, project_title: str, 
     qrstring = ScARFileManager.get_project_qrstring(username, project_title)
     aug_id = ScARFileManager.get_augmentation_id(username, project_title, augmentation_title)
     # save the file to local directory
-    run(session, f"save \"{file_path}\"")
+    run(session, f"save \"{file_path}\"", log=verbose)
     # update the augmentation on the server
     updated_aug_info = APIManager.edit_augmentation(
         token, qrstring, aug_id, file_path, target_update=target_update
@@ -318,7 +324,8 @@ def aug_save_and_update(session, token: str, username: str, project_title: str, 
     ScARFileManager.update_augs_info(username, project_title)
 
 
-def save_aug_session(session, username: str, project_title: str, augmentation_title: str, file_path: Union[str, None] = None):
+def save_aug_session(session, username: str, project_title: str, augmentation_title: str,
+                     file_path: Union[str, None] = None, verbose: bool = False):
     """
     ChimeraX command to save a .cxs session file to the augmentation's directory. The session file will be saved/copied
     into the augmentation's directory.
@@ -335,7 +342,7 @@ def save_aug_session(session, username: str, project_title: str, augmentation_ti
         target_session_file = ScARFileManager.aug_session_file(username, project_title, augmentation_title)
         # empty the directory before saving the session
         ScARFileManager.empty_dir(aug_session_dir)
-        run(session, f"save \"{target_session_file}\"")
+        run(session, f"save \"{target_session_file}\"", log=verbose)
     else:
         # Valid session file given from outside Schol-AR dir structure. Copy the file to the augmentation session dir.
         ScARFileManager.empty_dir(aug_session_dir)
@@ -346,12 +353,13 @@ save_aug_session_desc = CmdDesc(
     required=[('username', StringArg),
               ('project_title', StringArg),
               ('augmentation_title', StringArg)],
-    keyword=[('file_path', StringArg)],
+    keyword=[('file_path', StringArg),
+             ('verbose', BoolArg)],
     synopsis="Save a session file to the augmentation"
 )
 
 
-def open_aug_session(session, username: str, project_title: str, augmentation_title: str):
+def open_aug_session(session, username: str, project_title: str, augmentation_title: str, verbose: bool = False):
     """
     ChimeraX command to open a .cxs session file from the augmentation's directory. Assumes that there is only
     one session file stored at a time per augmentation. If there are multiple session files, the first listed one will
@@ -368,18 +376,20 @@ def open_aug_session(session, username: str, project_title: str, augmentation_ti
         return
 
     open_session_path = os.path.join(aug_session_dir, session_file_name)
-    run(session, f"open \"{open_session_path}\"")
+    run(session, f"open \"{open_session_path}\"", log=verbose)
 
 
 open_aug_session_desc = CmdDesc(
     required=[('username', StringArg),
               ('project_title', StringArg),
               ('augmentation_title', StringArg)],
+    keyword=[('verbose', BoolArg)],
     synopsis="Open a session file from the augmentation"
 )
 
 
-def store_target_image(session, username: str, project_title: str, augmentation_title: str, save_location: str):
+def store_target_image(session, username: str, project_title: str, augmentation_title: str, save_location: str,
+                       verbose: bool = False):
     """
     ChimeraX command to save the target image to a location outside the Schol-AR directory structure.
     """
@@ -390,7 +400,8 @@ def store_target_image(session, username: str, project_title: str, augmentation_
     target_image_path = ScARFileManager.get_augmentation_target_image_path(username, project_title, augmentation_title)
     if target_image_path is None:
         run(session,
-            f"scholar downloadAugFiles \"{username}\" \"{project_title}\" \"{augmentation_title}\" targetImage True augmentedFile False")
+            f"scholar downloadAugFiles \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
+            f"targetImage True augmentedFile False", log=verbose)
         target_image_path = ScARFileManager.get_augmentation_target_image_path(
             username, project_title, augmentation_title)
 
@@ -404,11 +415,13 @@ store_target_image_desc = CmdDesc(
               ('project_title', StringArg),
               ('augmentation_title', StringArg),
               ('save_location', SaveFileNameArg)],
+    keyword=[('verbose', BoolArg)],
     synopsis="Save the target image to a location outside the Schol-AR directory structure"
 )
 
 
-def store_model(session, username: str, project_title: str, augmentation_title: str, save_location: str):
+def store_model(session, username: str, project_title: str, augmentation_title: str, save_location: str,
+                verbose: bool = False):
     """
     ChimeraX command to save the augmented model to a location outside the Schol-AR directory structure.
     """
@@ -419,7 +432,7 @@ def store_model(session, username: str, project_title: str, augmentation_title: 
     model_path = ScARFileManager.get_auggmentation_model_file_path(username, project_title, augmentation_title)
     if model_path is None:
         run(session, f"scholar downloadAugFiles \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
-                     f"targetImage False augmentedFile True")
+                     f"targetImage False augmentedFile True", log=verbose)
         model_path = ScARFileManager.get_auggmentation_model_file_path(username, project_title, augmentation_title)
 
     if model_path is not None:
@@ -432,11 +445,13 @@ store_model_desc = CmdDesc(
               ('project_title', StringArg),
               ('augmentation_title', StringArg),
               ('save_location', SaveFileNameArg)],
+    keyword=[('verbose', BoolArg)],
     synopsis="Save the augmented model to a location outside the Schol-AR directory structure"
 )
 
 
-def store_all_aug_files(session, username: str, project_title: str, augmentation_title: str, save_folder: str):
+def store_all_aug_files(session, username: str, project_title: str, augmentation_title: str, save_folder: str,
+                        verbose: bool = False):
     """
     ChimeraX command to save all the augmentation files and qr code to a location outside the Schol-AR directory
     structure.
@@ -451,10 +466,10 @@ def store_all_aug_files(session, username: str, project_title: str, augmentation
     # Use the project title as the qr image file name. The qr title is a unique identifier and is confusing.
     qr_image_file_path = os.path.join(save_folder, f"{project_title}_qr.png")
     run(session, f"scholar storeModel \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
-                 f"\"{model_file_path}\"")
+                 f"\"{model_file_path}\"", log=verbose)
     run(session, f"scholar storeTargetImage \"{username}\" \"{project_title}\" \"{augmentation_title}\" "
-                 f"\"{target_image_file_path}\"")
-    run(session, f"scholar storeQR \"{username}\" \"{project_title}\" \"{qr_image_file_path}\"")
+                 f"\"{target_image_file_path}\"", log=verbose)
+    run(session, f"scholar storeQR \"{username}\" \"{project_title}\" \"{qr_image_file_path}\"", log=verbose)
 
 
 store_all_aug_files_desc = CmdDesc(
@@ -462,11 +477,12 @@ store_all_aug_files_desc = CmdDesc(
               ('project_title', StringArg),
               ('augmentation_title', StringArg),
               ('save_folder', SaveFolderNameArg)],
+    keyword=[('verbose', BoolArg)],
     synopsis="Save all augmentation files to a location outside the Schol-AR directory structure"
 )
 
 
-def store_qr_image(session, username: str, project_title: str, save_location: str):
+def store_qr_image(session, username: str, project_title: str, save_location: str, verbose: bool = False):
     """
     ChimeraX command to save the public QR code image to a location outside the Schol-AR directory structure.
     :param save_location: File name for the qr image save. Will be formatted into a .png file.
@@ -477,7 +493,7 @@ def store_qr_image(session, username: str, project_title: str, save_location: st
 
     pub_qr_image_path = ScARFileManager.get_qr_file(username, project_title, admin=False)
     if pub_qr_image_path is None:
-        run(session, f"scholar downloadQR \"{username}\" \"{project_title}\"")
+        run(session, f"scholar downloadQR \"{username}\" \"{project_title}\"", log=verbose)
         pub_qr_image_path = ScARFileManager.get_qr_file(username, project_title, admin=False)
 
     if pub_qr_image_path is not None:
@@ -489,6 +505,7 @@ store_qr_image_desc = CmdDesc(
     required=[('username', StringArg),
               ('project_title', StringArg),
               ('save_location', SaveFileNameArg)],
+    keyword=[('verbose', BoolArg)],
     synopsis="Save the public QR code image to a location outside the Schol-AR directory structure"
 )
 
