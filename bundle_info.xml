@@ -1,0 +1,86 @@
+<BundleInfo name="ChimeraX-ScholAR"
+	    version="0.4.2" package="chimerax.scholar"
+  	    minSessionVersion="1" maxSessionVersion="1">
+
+  <Author>UCSF RBVI</Author>
+  <Email>chimerax@cgl.ucsf.edu</Email>
+  <URL>https://www.rbvi.ucsf.edu/chimerax/</URL>
+
+  <!-- Synopsis is a one-line description
+       Description is a full multi-line description -->
+  <Synopsis>Interface between ChimeraX and Schol-AR.</Synopsis>
+  <Description>Interface between ChimeraX and Schol-AR.
+
+    Create and edit Schol-AR projects in ChimeraX.
+  </Description>
+
+  <!-- Categories is a list where this bundle should appear -->
+  <Categories>
+    <Category name="General"/>
+  </Categories>
+
+  <!-- Dependencies on other ChimeraX/Python packages -->
+  <Dependencies>
+    <Dependency name="ChimeraX-Core" version="~=1.4"/>
+    <Dependency name="ChimeraX-UI" version="~=1.0"/>
+  </Dependencies>
+
+  <!-- Non-Python files that are part of package -->
+  <DataFiles>
+    <DataFile>docs/user/tools/chimerax-scholar.html</DataFile>
+  </DataFiles>
+
+  <ExtraFiles>
+    <ExtraFile source="resources/images/scholarimage.png">resources/images/scholarimage.png</ExtraFile>
+  </ExtraFiles>
+
+  <Classifiers>
+    <!-- Development Status should be compatible with bundle version number -->
+    <PythonClassifier>Development Status :: 3 - Alpha</PythonClassifier>
+    <PythonClassifier>License :: Freeware</PythonClassifier>
+    <!-- ChimeraX classifiers describe supplied functionality -->
+    <!-- Register a graphical interface tool -->
+    <ChimeraXClassifier>ChimeraX :: Tool :: ScholAR ::
+      General :: ChimeraX and Schol-AR interface</ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar login :: General ::
+      User login for scholar</ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar project :: General ::
+      Select an existing project or create a new one and set up file structure.</ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar augmentation :: General ::
+      Select an existing augmentation or create a new one and set up file structure. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar downloadAugFiles :: General ::
+      Download augmentation files from Schol-AR into the local directory structure. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar uploadAugFiles :: General ::
+      Upload augmentation files from the current session to the Schol-AR from the local directory structure. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar downloadQR :: General ::
+      Download the QR files associated with a project. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar saveAugSession :: General ::
+      Save a ChimeraX Session file to an augmentation. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar openAugSession :: General ::
+      Open a ChimeraX Session if there is one linked to an augmentation. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar storeTargetImage :: General ::
+      Copy the target image for an augmentation to an inputted file target. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar storeModel :: General ::
+      Copy the model file for an augmentation to an inputted file target. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar storeAllAugFiles :: General ::
+      Copy the all augmentation files for an augmentation to an inputted folder. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar storeQRImage :: General ::
+      Save the public QR code image to a location outside the Schol-AR directory structure. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar cleanLocal :: General ::
+      Clean all local files that are associated with projects or augmentations that no longer exist on Schol-AR. </ChimeraXClassifier>
+  </Classifiers>
+
+</BundleInfo>
