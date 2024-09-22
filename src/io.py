@@ -41,6 +41,7 @@ class APIManager:
     def try_api_request(request_fn, display_errors: bool, *args, **kwargs) -> Optional[dict]:
         """
         Try to make an API request and return the response if successful. Print an error message if the request fails.
+
         :param display_errors: Should there be errors printed on a failed request
         :param request_fn: Function to make the API request. Must return a requests.Response object
         :param args: Positional arguments for the request function
@@ -66,6 +67,8 @@ class APIManager:
     def validate_api_token(api_token: str) -> bool:
         """
         Make a standard project request to the api to validate the api token
+
+        :param api_token: The API token to validate.
         :return: True if the api token is valid, False if it is not
         """
         url = 'https://www.Schol-AR.io/api/ListARP'
@@ -81,7 +84,9 @@ class APIManager:
     def list_arp_projects(api_token: str) -> Optional[dict]:
         """
         Make a call to the Schol-AR API to list all projects
-        :return: JSON response from the API. None if failed response
+
+        :param api_token: The API token for authorization.
+        :return: JSON response from the API. None if failed response.
         """
         url = 'https://www.Schol-AR.io/api/ListARP'
         headers = {'Authorization': f'Token {api_token}'}
@@ -91,7 +96,12 @@ class APIManager:
     def create_project(api_token: str, project_title: str, project_type: str, disc_url: str) -> Optional[dict]:
         """
         Make a call to the Schol-AR API to create a new project
-        :return: JSON response from the API. None if failed response
+
+        :param api_token: The API token for authorization.
+        :param project_title: The title of the project.
+        :param project_type: The type of the project.
+        :param disc_url: The URL for the project.
+        :return: JSON response from the API. None if failed response.
         """
         url = 'https://www.Schol-AR.io/api/CreateARP'
         headers = {
@@ -109,8 +119,11 @@ class APIManager:
     @staticmethod
     def get_qr_data(token: str, qr_string: str) -> Optional[dict]:
         """
-        Make call to API to retrieve cloud urls for qr code images
-        :return: JSON response from the API. None if failed response
+        Make a call to the API to retrieve cloud URLs for QR code images.
+
+        :param token: The API token for authorization.
+        :param qr_string: The QR string to retrieve data for.
+        :return: JSON response from the API. None if failed response.
         """
         url = f'https://www.Schol-AR.io/api/GetQR/{qr_string}'
         headers = {'Authorization': f'Token {token}'}
@@ -119,8 +132,11 @@ class APIManager:
     @staticmethod
     def list_augs(api_token: str, qr_string: str) -> Optional[dict]:
         """
-        Make a call to the Schol-AR API to list all augmentations for a project
-        :return: JSON response from the API. None if failed response
+        Make a call to the Schol-AR API to list all augmentations for a project.
+
+        :param api_token: The API token for authorization.
+        :param qr_string: The QR string to list augmentations for.
+        :return: JSON response from the API. None if failed response.
         """
         url = f'https://www.Schol-AR.io/api/ListAug/{qr_string}'
         headers = {'Authorization': f'Token {api_token}'}
@@ -130,8 +146,13 @@ class APIManager:
     def create_augmentation(
             token: str, qr_string: str, augmentation_title: str, augmentation_type: str) -> Optional[dict]:
         """
-        Make a call to the Schol-AR API to create a new augmentation
-        :return: JSON response from the API. None if failed response
+        Make a call to the Schol-AR API to create a new augmentation.
+
+        :param token: The API token for authorization.
+        :param qr_string: The QR string for the project.
+        :param augmentation_title: The title of the augmentation.
+        :param augmentation_type: The type of the augmentation.
+        :return: JSON response from the API. None if failed response.
         """
         url = f'https://www.Schol-AR.io/api/CreateAug/{qr_string}'
         headers = {'Authorization': f'Token {token}'}
@@ -144,6 +165,16 @@ class APIManager:
     @staticmethod
     def edit_augmentation(token: str, qrstring: str, aug_id: str, file_path: str,
                           target_update: bool) -> Optional[dict]:
+        """
+        Make a call to the Schol-AR API to edit an existing augmentation.
+
+        :param token: The API token for authorization.
+        :param qrstring: The QR string for the project.
+        :param aug_id: The ID of the augmentation to edit.
+        :param file_path: The path to the file to upload.
+        :param target_update: Whether the file is a target image update.
+        :return: JSON response from the API. None if failed response.
+        """
         if not ScARFileManager.check_file_size(file_path):
             print(f"File size too large. Must be less than {APIManager.MAX_FILE_SIZE_MB}MB")
             return None
@@ -160,9 +191,10 @@ class APIManager:
     @staticmethod
     def download_file_from_url(url: str, save_dir: str):
         """
-        Download a file from a URL and save it to a directory. File will be assigned name matching the name in the url.
-        :param url: URL to download file from
-        :param save_dir: what directory to download the file into
+        Download a file from a URL and save it to a directory. The file will be assigned a name matching the name in the URL.
+
+        :param url: URL to download the file from.
+        :param save_dir: Directory to save the downloaded file into.
         """
         # Make a GET request to the URL
         response = requests.get(url)
@@ -182,9 +214,10 @@ class APIManager:
     @staticmethod
     def extract_filename_from_url(url: str) -> str:
         """
-        Extract the filename from a cloud url
-        :param url: Google cloud storage API URL
-        :return: File name from url
+        Extract the filename from a cloud URL.
+
+        :param url: Google cloud storage API URL.
+        :return: Filename extracted from the URL.
         """
         parsed_url = urlparse(url)
         path = parsed_url.path
@@ -195,6 +228,12 @@ class APIManager:
 
     @staticmethod
     def sanitize_file_name(filename: str) -> str:
+        """
+        Sanitize a filename by removing or replacing special characters.
+
+        :param filename: The filename to sanitize.
+        :return: Sanitized filename.
+        """
         # Remove or replace special characters
         sanitized_file_name = re.sub(r'[<>:"/\\|?*\x00-\x1F]', '_', filename)
         # Replace path traversal
