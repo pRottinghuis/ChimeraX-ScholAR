@@ -365,10 +365,16 @@ class ScholarLoginWidget(QWidget):
 class ScholarProjectWidget(QWidget):
 
     def __init__(self):
+        """
+        Initialize the ScholarProjectWidget.
+        """
         super().__init__()
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the UI for the project widget.
+        """
         self.main_layout = QVBoxLayout(self)
         # This spacing will apply to all sub layouts
         self.main_layout.setSpacing(10)
@@ -425,20 +431,35 @@ class ScholarProjectWidget(QWidget):
         self.main_layout.addWidget(self.create_new_project_button, alignment=Qt.AlignmentFlag.AlignRight)
 
     def refresh_ui(self):
+        """
+        Refresh the input fields for the project widget.
+        """
         self.existing_project_combobox.clear()
         self.project_name_lineedit.clear()
         self.project_url_lineedit.clear()
 
     def set_existing_projects(self, projects: list):
+        """
+        Set the items in the existing project combobox.
+
+        :param projects: List of project titles to add to the combobox.
+        """
         self.existing_project_combobox.clear()
         self.existing_project_combobox.addItems(projects)
 
     def get_existing_project_title(self) -> str:
+        """
+        Get the selected existing project title.
+
+        :return: The title of the selected existing project.
+        """
         return self.existing_project_combobox.currentText()
 
     def get_new_proj_info(self) -> tuple:
         """
-        :return: (project_name, project_type, project_url)
+        Get the new project information.
+
+        :return: A tuple containing the project name, project type, and project URL.
         """
         return (self.project_name_lineedit.text(),
                 self.project_type_combobox.currentText(),
@@ -446,10 +467,20 @@ class ScholarProjectWidget(QWidget):
 
     @property
     def select_existing_project_signal(self):
+        """
+        Signal for the existing project selection button.
+
+        :return: The clicked signal of the select existing project button.
+        """
         return self.select_existing_project_button.clicked
 
     @property
     def create_new_project_signal(self):
+        """
+        Signal for the create new project button.
+
+        :return: The clicked signal of the create new project button.
+        """
         return self.create_new_project_button.clicked
 
 
