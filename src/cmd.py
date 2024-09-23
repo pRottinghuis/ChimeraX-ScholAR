@@ -8,8 +8,6 @@ from chimerax.core.commands import run
 from .io import ScARFileManager, APIManager
 
 
-# TODO make all commands run under this bundles commands not appear in the log by default
-
 def login(session, username: str, api_token: Union[str, None] = None):
     """
     ChimeraX command that is used to log in a Schol-AR chimerax user. If the user does not exist, the users name and
