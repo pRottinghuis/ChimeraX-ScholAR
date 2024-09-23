@@ -1,3 +1,8 @@
+"""
+This module provides ChimeraX commands for managing user login, project selection, and augmentation within the
+Schol-AR application.
+"""
+
 import os.path
 import shutil
 from typing import Union
