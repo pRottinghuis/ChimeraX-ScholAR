@@ -610,12 +610,21 @@ class ScholarSelAugWidget(QWidget):
 
 
 class ScholarAugEditWidget(QWidget):
+    """
+    Widget for editing augmentations within a project.
+    """
 
     def __init__(self):
+        """
+        Initialize the ScholarAugEditWidget.
+        """
         super().__init__()
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the UI for the augmentation edit widget.
+        """
         self.main_layout = QVBoxLayout(self)
 
         # Title label for the active project
@@ -657,17 +666,35 @@ class ScholarAugEditWidget(QWidget):
         self.main_layout.addLayout(self.preview_action_layout)
 
     def refresh_ui(self):
+        """
+        Refresh the input fields for the augmentation edit widget.
+        """
         self.target_image_pixmap_label.clear()
         self.project_title_label.clear()
         self.augmentation_title_label.clear()
 
     def set_project_title(self, title):
+        """
+        Set the project title label.
+
+        :param title: The title of the project.
+        """
         self.project_title_label.setText(f"Project: {title}")
 
     def set_augmentation_title(self, title):
+        """
+        Set the augmentation title label.
+
+        :param title: The title of the augmentation.
+        """
         self.augmentation_title_label.setText(f"Selected Augmentation: {title}")
 
     def update_target_image_display(self, image_path):
+        """
+        Update the target image display.
+
+        :param image_path: The path to the target image.
+        """
         self.target_image_pixmap_label.clear()
 
         pixmap = QPixmap(image_path)
@@ -684,22 +711,47 @@ class ScholarAugEditWidget(QWidget):
 
     @property
     def update_target_image_signal(self):
+        """
+        Signal for the update target image button.
+
+        :return: The clicked signal of the update target image button.
+        """
         return self.update_target_image_button.clicked
 
     @property
     def update_model_signal(self):
+        """
+        Signal for the update model button.
+
+        :return: The clicked signal of the update model button.
+        """
         return self.update_model_button.clicked
 
     @property
     def preview_aug_signal(self):
+        """
+        Signal for the preview augmentation button.
+
+        :return: The clicked signal of the preview augmentation button.
+        """
         return self.preview_aug_button.clicked
 
     @property
     def save_files_locally_signal(self):
+        """
+        Signal for the save files locally button.
+
+        :return: The clicked signal of the save files locally button.
+        """
         return self.save_files_locally_button.clicked
 
     @property
     def save_and_close_signal(self):
+        """
+        Signal for the save and close button.
+
+        :return: The clicked signal of the save and close button.
+        """
         return self.save_and_close_button.clicked
 
 
