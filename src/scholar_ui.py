@@ -9,6 +9,14 @@ from .io import APIManager
 
 
 class ScholarAugPreviewWidget(QWidget):
+    """
+    Widget for previewing augmentations within a project.
+
+    This widget provides a user interface to display the target image, public QR code,
+    admin QR code, and the tracking score for an augmentation. It also allows assigning
+    the preview to a tool window.
+    """
+
     def __init__(self):
         """
         Initialize the ScholarAugPreviewWidget.
@@ -189,6 +197,9 @@ class ScholarAugPreviewWidget(QWidget):
 
 
 class ScholarLoginWidget(QWidget):
+    """
+    Widget for handling user login within the Scholar application.
+    """
 
     def __init__(self):
         """
@@ -363,6 +374,9 @@ class ScholarLoginWidget(QWidget):
 
 
 class ScholarProjectWidget(QWidget):
+    """
+    Widget for handling Schol-AR project selection and creation.
+    """
 
     def __init__(self):
         """
