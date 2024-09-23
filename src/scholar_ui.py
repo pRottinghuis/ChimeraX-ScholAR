@@ -756,6 +756,10 @@ class ScholarAugEditWidget(QWidget):
 
 
 class ScholarMainLayout(QVBoxLayout):
+    """
+    Main layout for the Scholar application, managing different widgets for login, project selection,
+    augmentation selection, and augmentation editing.
+    """
 
     LOGIN = 0
     PROJECT_SELECT = 1
@@ -763,6 +767,11 @@ class ScholarMainLayout(QVBoxLayout):
     AUGMENTATION_EDIT = 3
 
     def __init__(self, parent=None):
+        """
+        Initialize the ScholarMainLayout.
+
+        :param parent: The parent widget, if any.
+        """
         super().__init__(parent)
         parent.setLayout(self)
 
@@ -817,7 +826,10 @@ class ScholarMainLayout(QVBoxLayout):
 
     def set_active_widget(self, widget: int):
         """
-        :param widget: use class variables to set the widget
+        Set the active widget in the main stack. Use the class constants (LOGIN, PROJECT_SELECT, AUGMENTATION_SELECT,
+        AUGMENTATION_EDIT) to set the widget.
+
+        :param widget: The index of the widget to set as active.
         """
         self.main_stack.setCurrentIndex(widget)
         
@@ -847,29 +859,69 @@ class ScholarMainLayout(QVBoxLayout):
             self.store_qr_button.show()
 
     def get_login_widget(self) -> ScholarLoginWidget:
+        """
+        Get the login widget.
+
+        :return: The login widget.
+        """
         return self.main_stack.widget(0)
 
     def get_project_widget(self) -> ScholarProjectWidget:
+        """
+        Get the project widget.
+
+        :return: The project widget.
+        """
         return self.main_stack.widget(1)
 
     def get_aug_sel_widget(self) -> ScholarSelAugWidget:
+        """
+        Get the augmentation selection widget.
+
+        :return: The augmentation selection widget.
+        """
         return self.main_stack.widget(2)
 
     def get_augmentation_edit_widget(self) -> ScholarAugEditWidget:
+        """
+        Get the augmentation edit widget.
+
+        :return: The augmentation edit widget.
+        """
         return self.main_stack.widget(3)
 
     @property
     def return_login_page_signal(self):
+        """
+        Signal for the return to login page button.
+
+        :return: The clicked signal of the return to login page button.
+        """
         return self.login_button.clicked
 
     @property
     def return_project_page_signal(self):
+        """
+        Signal for the return to project page button.
+
+        :return: The clicked signal of the return to project page button.
+        """
         return self.project_button.clicked
 
     @property
     def save_qr_signal(self):
+        """
+        Signal for the save QR button.
+
+        :return: The clicked signal of the save QR button.
+        """
         return self.store_qr_button.clicked
 
     @property
     def return_augmentation_page_signal(self):
+        """
+        Signal for the return to augmentation page button.
+
+        :return: The clicked signal of the return to augmentation page button.
+        """
         return self.augmentation_button.clicked
