@@ -10,10 +10,16 @@ from .io import APIManager
 
 class ScholarAugPreviewWidget(QWidget):
     def __init__(self):
+        """
+        Initialize the ScholarAugPreviewWidget.
+        """
         super().__init__()
         self.setup_aug_preview_ui()
 
     def setup_aug_preview_ui(self):
+        """
+        Set up the UI for the augmentation preview widget.
+        """
         self.layout = QVBoxLayout(self)
 
         # Create a horizontal layout to the preview label and the label stack for the qr and tracking score
@@ -126,11 +132,28 @@ class ScholarAugPreviewWidget(QWidget):
 
     @staticmethod
     def create_new_aug_preview_ui(child_window, target_image_path, pub_qr_path, admin_qr_path, tracking_score):
+        """
+        Create a new augmentation preview UI.
+
+        :param child_window: The child window to assign the preview UI to.
+        :param target_image_path: The path to the target image.
+        :param pub_qr_path: The path to the public QR code image.
+        :param admin_qr_path: The path to the admin QR code image.
+        :param tracking_score: The target image tracking score.
+        """
         preview_widget = ScholarAugPreviewWidget()
         preview_widget.assign_to_preview_window(child_window)
         preview_widget.preview_aug(target_image_path, pub_qr_path, admin_qr_path, tracking_score)
 
     def preview_aug(self, preview_image_path, pub_qr_path, admin_qr_path, tracking_score):
+        """
+        Preview the augmentation.
+
+        :param preview_image_path: The path to the preview image.
+        :param pub_qr_path: The path to the public QR code image.
+        :param admin_qr_path: The path to the admin QR code image.
+        :param tracking_score: The tracking score.
+        """
         preview_pixmap = QPixmap(preview_image_path)
         self.previewLabel.setPixmap(
             preview_pixmap.scaled(self.previewLabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -156,19 +179,28 @@ class ScholarAugPreviewWidget(QWidget):
 
     def assign_to_preview_window(self, tool_window):
         """
-        This needs to be called before preview_aug is called so that the layout is set and the window size can pick up
-        on the right sizeHints
+        Assign the preview widget to a tool window.
+
+        :param tool_window: The tool window to assign the preview widget to.
         """
+        # This needs to be called before preview_aug is called so that the layout is set and the window size can pick up
+        # on the right sizeHints
         tool_window.setLayout(self.layout)
 
 
 class ScholarLoginWidget(QWidget):
 
     def __init__(self):
+        """
+        Initialize the ScholarLoginWidget.
+        """
         super().__init__()
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the UI for the login widget.
+        """
         self.main_layout = QVBoxLayout(self)
         # This spacing will apply to all sub layouts
         self.main_layout.setSpacing(10)
@@ -279,29 +311,54 @@ class ScholarLoginWidget(QWidget):
         self.main_layout.addLayout(self.bottom_submission_hbox)
 
     def refresh_iu(self):
+        """
+        Refresh the input fields for the login widget.
+        """
         self.existing_user_combobox.clear()
         self.user_lineedit.clear()
         self.api_token_lineedit.clear()
 
     def set_login_combobox(self, users: list):
+        """
+        Set the items in the existing user combobox.
+
+        :param users: List of usernames to add to the combobox.
+        """
         self.existing_user_combobox.clear()
         self.existing_user_combobox.addItems(users)
 
     def get_exiting_user(self) -> str:
+        """
+        Get the selected existing user.
+
+        :return: The username of the selected existing user.
+        """
         return self.existing_user_combobox.currentText()
 
     def get_new_login_info(self) -> tuple:
         """
-        :return: (username, api_token)
+        Get the new login information.
+
+        :return: A tuple containing the username and API token.
         """
         return self.user_lineedit.text(), self.api_token_lineedit.text()
 
     @property
     def new_user_signal(self):
+        """
+        Signal for the new user submission button.
+
+        :return: The clicked signal of the submit new user button.
+        """
         return self.submit_new_user_button.clicked
 
     @property
     def existing_user_signal(self):
+        """
+        Signal for the existing user selection button.
+
+        :return: The clicked signal of the select existing user button.
+        """
         return self.select_existing_user_button.clicked
 
 
