@@ -1,3 +1,16 @@
+"""
+This module contains the implementation of the Scholar UI components for the Scholar application.
+
+Classes:
+    ScholarAugPreviewWidget: Widget for previewing augmentations within a project.
+    ScholarLoginWidget: Widget for handling user login within the Scholar application.
+    ScholarProjectWidget: Widget for handling project selection and creation within the Scholar application.
+    ScholarSelAugWidget: Widget for selecting and creating augmentations within a project.
+    ScholarAugEditWidget: Widget for editing augmentations within a project.
+    ScholarMainLayout: Main layout for the Scholar application, managing different widgets for login, project selection,
+                       augmentation selection, and augmentation editing.
+"""
+
 import os
 
 from Qt.QtCore import Qt, QUrl
