@@ -485,12 +485,21 @@ class ScholarProjectWidget(QWidget):
 
 
 class ScholarSelAugWidget(QWidget):
+    """
+    Widget for selecting and creating augmentations within a project.
+    """
 
     def __init__(self):
+        """
+        Initialize the ScholarSelAugWidget.
+        """
         super().__init__()
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the UI for the augmentation selection widget.
+        """
         self.main_layout = QVBoxLayout(self)
         # This spacing will apply to all sub layouts
         self.main_layout.setSpacing(10)
@@ -541,29 +550,62 @@ class ScholarSelAugWidget(QWidget):
         self.main_layout.addWidget(self.select_existing_augmentation_button, alignment=Qt.AlignmentFlag.AlignRight)
 
     def refresh_ui(self):
+        """
+        Refresh the input fields for the augmentation selection widget.
+        """
         self.augmentation_title_lineedit.clear()
         self.augmentation_combobox.clear()
         self.project_title_label.clear()
 
     def set_project_title(self, title):
+        """
+        Set the project title label.
+
+        :param title: The title of the project.
+        """
         self.project_title_label.setText(f"Project: {title}")
 
     def get_new_aug_title(self) -> str:
+        """
+        Get the new augmentation title.
+
+        :return: The title of the new augmentation.
+        """
         return self.augmentation_title_lineedit.text()
 
     def set_existing_augmentations(self, augmentations: list):
+        """
+        Set the items in the existing augmentations combobox.
+
+        :param augmentations: List of augmentation titles to add to the combobox.
+        """
         self.augmentation_combobox.clear()
         self.augmentation_combobox.addItems(augmentations)
 
     def get_existing_aug_selection(self) -> str:
+        """
+        Get the selected existing augmentation title.
+
+        :return: The title of the selected existing augmentation.
+        """
         return self.augmentation_combobox.currentText()
 
     @property
     def create_new_aug_signal(self):
+        """
+        Signal for the create new augmentation button.
+
+        :return: The clicked signal of the create new augmentation button.
+        """
         return self.create_new_augmentation_button.clicked
 
     @property
     def select_existing_aug_signal(self):
+        """
+        Signal for the select existing augmentation button.
+
+        :return: The clicked signal of the select existing augmentation button.
+        """
         return self.select_existing_augmentation_button.clicked
 
 
