@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 
 import requests
 from chimerax import app_dirs_unversioned
+from chimerax.core.commands import run
 from requests import Response
 
 
@@ -281,6 +282,9 @@ class ScARFileManager:
 
     USER_INFO_FILE = "users_info.json"
     USERS_INFO_PATH = os.path.join(BASE_DIR, USER_INFO_FILE)
+
+    # Directory used for file size checks
+    TEMP_DIR = os.path.join(BASE_DIR, "temp")
 
     PROJECT_INFO_FILE = "projects_info.json"
     QR_DIR = "qr"
@@ -1021,3 +1025,25 @@ class ScARFileManager:
 
         file_size = os.path.getsize(file_path) / (1024 * 1024)  # Convert bytes to megabytes
         return file_size < max_size
+
+    @classmethod
+    def save_and_size_check(cls, session, file_extension: str, verbose: bool = False):
+        """
+        Save a file to a temporary directory, check if it is within the allowed Schol-AR size, and then delete it.
+
+        :param session: The current ChimeraX session.
+        :param file_extension: The desired file extension for the saved file (e.g., ".png").
+        :param verbose: If True, the command will log additional information. Default is False.
+        :return: True if the file size is within the allowed limit, False otherwise.
+        """
+        # Create a temporary directory to save the file
+        os.makedirs(cls.TEMP_DIR, exist_ok=True)
+        # Save the file to the temporary directory
+        file_name = f"scholar-file-check{file_extension}"
+        file_path = os.path.join(cls.TEMP_DIR, file_name)
+        run(session, f"save \"{file_path}\"", log=verbose)
+        # Check if the file size is within the allowed limit
+        is_within_size_limit = cls.check_file_size(file_path)
+        # Delete the entire temporary directory
+        shutil.rmtree(cls.TEMP_DIR)
+        return is_within_size_limit
