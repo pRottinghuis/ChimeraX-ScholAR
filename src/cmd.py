@@ -191,6 +191,14 @@ def augmentation(session, username: str, project_title: str, augmentation_title:
         token = ScARFileManager.get_user_token(username)
         qrstring = ScARFileManager.get_project_qrstring(username, project_title)
 
+        # check if the model and target image files are too large before creating the augmentation
+        if not ScARFileManager.save_and_size_check(session, '.glb'):
+            session.logger.warning(f"Model file must be smaller than {APIManager.MAX_FILE_SIZE_MB}MB.")
+            return
+        if not ScARFileManager.save_and_size_check(session, '.png'):
+            session.logger.warning(f"Target Image file must be smaller than {APIManager.MAX_FILE_SIZE_MB}MB.")
+            return
+
         # The augmentation needs to be created on Schol-AR side.
         create_aug_response = APIManager.create_augmentation(
             token, qrstring, augmentation_title, augmentation_type
