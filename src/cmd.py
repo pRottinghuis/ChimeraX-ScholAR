@@ -25,7 +25,7 @@ def login(session, username: str, api_token: Union[str, None] = None):
     :param api_token: The API token for the Schol-AR user. If None, the token will be retrieved from the save file.
     """
     if not valid_input_string(username):
-        session.logger.info("Invalid username. Usernames can only contain letters, numbers, and spaces.")
+        session.logger.warning("Invalid username. Usernames can only contain letters, numbers, and spaces.")
         return
 
     ScARFileManager.init_scholar_dirs()
@@ -35,13 +35,13 @@ def login(session, username: str, api_token: Union[str, None] = None):
         retrieved_token = ScARFileManager.get_user_token(username)
         if retrieved_token is None:
             # if the user did not exist in the info file
-            session.logger.info(f"User {username} does not exist")
+            session.logger.warning(f"User {username} does not exist")
             return
         user_token = retrieved_token
 
     if not APIManager.validate_api_token(user_token):
         # exit on invalid api token
-        session.logger.info(f"Invalid API token: {user_token}")
+        session.logger.warning(f"Invalid API token: {user_token}")
         return
 
     ScARFileManager.update_users_info(username, user_token)
@@ -72,12 +72,12 @@ def project(session, username: str, project_title: str, project_type: str = "oth
         return
 
     if not valid_input_string(project_title):
-        session.logger.info("Invalid project title. Project titles can only contain letters, numbers, and spaces.")
+        session.logger.warning("Invalid project title. Project titles can only contain letters, numbers, and spaces.")
         return
 
     if project_type not in APIManager.PROJECT_TYPES.values():
         project_types = ", ".join(APIManager.PROJECT_TYPES.values())
-        session.logger.info(f"Invalid project type. Project type must be one of: {project_types}")
+        session.logger.warning(f"Invalid project type. Project type must be one of: {project_types}")
         return
 
     # set target project if param project_title exists in the user's project list. None means it does not exist
@@ -90,7 +90,7 @@ def project(session, username: str, project_title: str, project_type: str = "oth
         project_response = APIManager.create_project(token, project_title, project_type, disc_url)
         if project_response is None:
             # this will happen if there is a network call error
-            session.logger.info(f"Failed to create project: {project_title} on scholar server")
+            session.logger.warning(f"Failed to create project: {project_title} on scholar server")
             return
 
         # create the project locally
@@ -101,7 +101,7 @@ def project(session, username: str, project_title: str, project_type: str = "oth
 
         # if the target_project is still none that means that there was an error creating the project locally
         if target_project is None:
-            session.logger.info(f"Failed to create project locally {project_title}")
+            session.logger.error(f"Failed to create project locally {project_title}")
             return
 
     # Once we get to here we know that the project exists in the user's project list and qr dirs
@@ -133,7 +133,7 @@ def download_qr(session, username: str, project_title: str):
     qr_data = APIManager.get_qr_data(token, qrstring)
 
     if qr_data is None:
-        session.logger.info(f"Failed to download project files for project {project_title}")
+        session.logger.warning(f"Failed to download project files for project {project_title}")
         return
 
     pub_save_dir = ScARFileManager.pub_qr_dir(username, project_title)
@@ -175,12 +175,12 @@ def augmentation(session, username: str, project_title: str, augmentation_title:
         return
 
     if not valid_input_string(augmentation_title):
-        session.logger.info("Invalid augmentation title. Augmentation titles can contain only letters, numbers, and "
+        session.logger.warning("Invalid augmentation title. Augmentation titles can contain only letters, numbers, and "
                             "spaces.")
         return
 
     if augmentation_type != "model":
-        session.logger.info("Invalid augmentation type. Only supported augmentation type is 'model'.")
+        session.logger.warning("Invalid augmentation type. Only supported augmentation type is 'model'.")
         return
 
     # check if the aug needs to be created or if it exists in the project info save file
@@ -208,7 +208,7 @@ def augmentation(session, username: str, project_title: str, augmentation_title:
 
         # Check to see if anything went wrong with the network post
         if create_aug_response is None:
-            session.logger.info(f"Failed to create augmentation {augmentation_title} for project {project_title}")
+            session.logger.warning(f"Failed to create augmentation {augmentation_title} for project {project_title}")
             return
 
         # update the project save file once we know the augmentation was created
@@ -264,7 +264,7 @@ def download_aug_files(
 
         # check if the target image exists
         if target_image_url is None:
-            session.logger.info(f"Can't sync because Target Image for: {augmentation_title} not found")
+            session.logger.warning(f"Can't sync because Target Image for: {augmentation_title} not found")
         else:
             # only keep the 1 file that is being used
             target_dir = ScARFileManager.aug_target_dir(username, project_title, augmentation_title)
@@ -277,7 +277,7 @@ def download_aug_files(
         augmented_url = ScARFileManager.get_augmentation_model_url(username, project_title, augmentation_title)
         # check if the augmented file exists
         if augmented_url is None:
-            session.logger.info(f"Can't sync because Augmented File for: {augmentation_title} not found")
+            session.logger.warning(f"Can't sync because Augmented File for: {augmentation_title} not found")
         else:
             # only keep the 1 file that is being used in the directory
             model_dir = ScARFileManager.aug_model_dir(username, project_title, augmentation_title)
@@ -368,7 +368,7 @@ def aug_save_and_update(session, token: str, username: str, project_title: str, 
     )
     # something on the server failed check
     if updated_aug_info is None:
-        session.logger.info(f"Failed to update augmentation {augmentation_title} for project {project_title}")
+        session.logger.warning(f"Failed to update augmentation {augmentation_title} for project {project_title}")
         return
     # make sure that the save files for the project are updated
     ScARFileManager.update_augs_info(username, project_title)
@@ -432,7 +432,7 @@ def open_aug_session(session, username: str, project_title: str, augmentation_ti
     aug_session_dir = ScARFileManager.aug_session_dir(username, project_title, augmentation_title)
     session_file_name = ScARFileManager.get_first_file(aug_session_dir)
     if session_file_name is None:
-        session.logger.info(f"No session file found for Augmentation: {augmentation_title}")
+        session.logger.info(f"No session file yet for Augmentation: {augmentation_title}")
         return
 
     open_session_path = os.path.join(aug_session_dir, session_file_name)
