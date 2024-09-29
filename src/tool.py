@@ -401,7 +401,7 @@ class ChimeraXScholARTool(ToolInstance):
 
     def store_qr_image(self):
         """
-        Stores the QR image locally.
+        Stores the public QR image locally.
         """
         if self.active_user is None or self.active_project is None:
             return
