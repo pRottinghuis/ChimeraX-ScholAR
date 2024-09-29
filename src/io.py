@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 import requests
 from chimerax import app_dirs_unversioned
 from chimerax.core.commands import run
+from chimerax.core.errors import NonChimeraXError
 from requests import Response
 
 
@@ -55,13 +56,15 @@ class APIManager:
             response.raise_for_status()  # Raises a HTTPError if the response status is 4xx, 5xx
             return response.json()
         except requests.exceptions.RequestException as e:
+            if 500 <= response.status_code < 600:
+                raise NonChimeraXError(f"Schol-AR server error occurred: {response.status_code}. \n Error: \n{e}")
             if display_errors:
                 if response is not None:
                     # The request was made but the server returned an error
                     print(f"An error occurred while making the API call: \n{response.url}\n Error: \n{e}")
                 else:
                     # The request was not made to the server
-                    print(f"An error occurred while making the API call: \n{e}")
+                    print(f"An error occurred before making the API call: \n{e}")
             return None
 
     @staticmethod
