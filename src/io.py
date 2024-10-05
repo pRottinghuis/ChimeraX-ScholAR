@@ -62,7 +62,7 @@ class APIManager:
                     print(f"An error occurred while making the API call: \n{response.url}\n Error: \n{e}")
                 else:
                     # The request was not made to the server
-                    print(f"An error occurred while making the API call: \n{e}")
+                    print(f"An error occurred before making the API call: \n{e}")
             if 500 <= response.status_code < 600:
                 raise NonChimeraXError(f"Schol-AR server error occurred: {response.status_code}. \n Error: \n{e}")
             return None
