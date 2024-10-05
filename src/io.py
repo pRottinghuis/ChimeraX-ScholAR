@@ -40,11 +40,10 @@ class APIManager:
     MAX_FILE_SIZE_MB = 30
 
     @staticmethod
-    def try_api_request(request_fn, display_errors: bool, *args, **kwargs) -> Optional[dict]:
+    def try_api_request(request_fn, *args, **kwargs) -> Optional[dict]:
         """
         Try to make an API request and return the response if successful. Print an error message if the request fails.
 
-        :param display_errors: Should there be errors printed on a failed request
         :param request_fn: Function to make the API request. Must return a requests.Response object
         :param args: Positional arguments for the request function
         :param kwargs: Keyword arguments for the request function
@@ -56,15 +55,16 @@ class APIManager:
             response.raise_for_status()  # Raises a HTTPError if the response status is 4xx, 5xx
             return response.json()
         except requests.exceptions.RequestException as e:
+            if response is None:
+                # The request did not make it to the server
+                print(f"An error occurred before the Schol-AR network request finished. \n Error: \n{e}")
+                return None
             if 500 <= response.status_code < 600:
-                raise NonChimeraXError(f"Schol-AR server error occurred: {response.status_code}. \n Error: \n{e}")
-            if display_errors:
-                if response is not None:
-                    # The request was made but the server returned an error
-                    print(f"An error occurred while making the API call: \n{response.url}\n Error: \n{e}")
-                else:
-                    # The request was not made to the server
-                    print(f"An error occurred before making the API call: \n{e}")
+                raise NonChimeraXError(f"Schol-AR server error occurred making the API call: \n{response.url}"
+                                       f"\n Error: \n{e}")
+            else:
+                # The request was made but there is some other error
+                print(f"An error occurred while making the Schol-AR network call: \n{response.url}\n Error: \n{e}")
             return None
 
     @staticmethod
@@ -78,7 +78,7 @@ class APIManager:
         url = 'https://www.Schol-AR.io/api/ListARP'
         headers = {'Authorization': f'Token {api_token}'}
         # We don't need to display errors. What goes wrong doesn't concern the user here.
-        response = APIManager.try_api_request(requests.get, False, url, headers=headers)
+        response = APIManager.try_api_request(requests.get, url, headers=headers)
         if response is None:
             return False
         else:
@@ -94,7 +94,7 @@ class APIManager:
         """
         url = 'https://www.Schol-AR.io/api/ListARP'
         headers = {'Authorization': f'Token {api_token}'}
-        return APIManager.try_api_request(requests.get, True, url, headers=headers)
+        return APIManager.try_api_request(requests.get, url, headers=headers)
 
     @staticmethod
     def create_project(api_token: str, project_title: str, project_type: str, disc_url: str) -> Optional[dict]:
@@ -118,7 +118,7 @@ class APIManager:
             APIManager.PROJECT_TYPE_KEY: project_type,
             APIManager.PROJECT_DISC_URL_KEY: disc_url
         }
-        return APIManager.try_api_request(requests.post, True, url, headers=headers, json=data)
+        return APIManager.try_api_request(requests.post, url, headers=headers, json=data)
 
     @staticmethod
     def get_qr_data(token: str, qr_string: str) -> Optional[dict]:
@@ -131,7 +131,7 @@ class APIManager:
         """
         url = f'https://www.Schol-AR.io/api/GetQR/{qr_string}'
         headers = {'Authorization': f'Token {token}'}
-        return APIManager.try_api_request(requests.get, True, url, headers=headers)
+        return APIManager.try_api_request(requests.get, url, headers=headers)
 
     @staticmethod
     def list_augs(api_token: str, qr_string: str) -> Optional[dict]:
@@ -144,7 +144,7 @@ class APIManager:
         """
         url = f'https://www.Schol-AR.io/api/ListAug/{qr_string}'
         headers = {'Authorization': f'Token {api_token}'}
-        return APIManager.try_api_request(requests.get, True, url, headers=headers)
+        return APIManager.try_api_request(requests.get, url, headers=headers)
 
     @staticmethod
     def create_augmentation(
@@ -164,7 +164,7 @@ class APIManager:
             APIManager.AUGMENTATION_TITLE_KEY: augmentation_title,
             APIManager.AUGMENTATION_TYPE_KEY: augmentation_type,
         }
-        return APIManager.try_api_request(requests.post, True, url, headers=headers, json=data)
+        return APIManager.try_api_request(requests.post, url, headers=headers, json=data)
 
     @staticmethod
     def edit_augmentation(token: str, qrstring: str, aug_id: str, file_path: str,
@@ -190,7 +190,7 @@ class APIManager:
             files[APIManager.AUGMENTATION_TARGET_KEY] = open(file_path, 'rb')
         else:
             files[APIManager.AUGMENTATION_AUG_FILE_KEY] = open(file_path, 'rb')
-        return APIManager.try_api_request(requests.patch, True, url, headers=headers, files=files)
+        return APIManager.try_api_request(requests.patch, url, headers=headers, files=files)
 
     @staticmethod
     def download_file_from_url(url: str, save_dir: str):

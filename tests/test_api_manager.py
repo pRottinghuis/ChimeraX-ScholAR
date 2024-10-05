@@ -30,9 +30,9 @@ def test_try_api_request(test_production_session, status_code, expected_exceptio
     with patch('requests.get', return_value=mock_response):
         if expected_exception:
             with pytest.raises(expected_exception) as excinfo:
-                APIManager.try_api_request(requests.get, True, "http://example.com")
+                APIManager.try_api_request(requests.get, "http://example.com")
             real_message = str(excinfo.value)
             assert expected_message in real_message
         else:
-            result = APIManager.try_api_request(requests.get, True, "http://example.com")
+            result = APIManager.try_api_request(requests.get, "http://example.com")
             assert result is None
