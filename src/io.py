@@ -813,6 +813,20 @@ class ScARFileManager:
         return os.path.join(cls.aug_session_dir(username, project_title, augmentation_title), session_name)
 
     @classmethod
+    def has_session_file(cls, username: str, project_title: str, augmentation_title: str) -> bool:
+        """
+        Check if a session file exists for an augmentation.
+
+        :param username: The username to check.
+        :param project_title: The project title to check.
+        :param augmentation_title: The augmentation title to check.
+        :return: True if the session file exists, False otherwise.
+        """
+        # Check if there is a session file in the augmentation session directory
+        session_dir = cls.aug_session_dir(username, project_title, augmentation_title)
+        return cls.get_first_file(session_dir).endswith('.cxs') if cls.get_first_file(session_dir) else False
+
+    @classmethod
     def get_augmentation_target_url(cls, username: str, project_title: str, augmentation_title: str) -> Optional[str]:
         """
         Get the URL for the target image of an augmentation.
