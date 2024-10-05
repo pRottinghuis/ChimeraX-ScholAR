@@ -12,10 +12,10 @@ from chimerax.core.errors import NonChimeraXError
         pytest.param(401, None, "An error occurred while making the API call", id="status_401"),
         pytest.param(403, None, "An error occurred while making the API call", id="status_403"),
         pytest.param(404, None, "An error occurred while making the API call", id="status_404"),
-        pytest.param(500, NonChimeraXError, "Schol-AR server error occurred: 500", id="status_500"),
-        pytest.param(502, NonChimeraXError, "Schol-AR server error occurred: 502", id="status_502"),
-        pytest.param(503, NonChimeraXError, "Schol-AR server error occurred: 503", id="status_503"),
-        pytest.param(504, NonChimeraXError, "Schol-AR server error occurred: 504", id="status_504"),
+        pytest.param(500, NonChimeraXError, "Schol-AR server error occurred making the API call", id="status_500"),
+        pytest.param(502, NonChimeraXError, "Schol-AR server error occurred making the API call", id="status_502"),
+        pytest.param(503, NonChimeraXError, "Schol-AR server error occurred making the API call", id="status_503"),
+        pytest.param(504, NonChimeraXError, "Schol-AR server error occurred making the API call", id="status_504"),
     ]
 )
 def test_try_api_request(test_production_session, status_code, expected_exception, expected_message):

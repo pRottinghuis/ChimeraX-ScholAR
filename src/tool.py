@@ -8,6 +8,7 @@ Scholar api.
 from typing import Optional
 
 from Qt.QtGui import QAction
+from Qt.QtWidgets import QMessageBox
 from chimerax.core.commands import run
 from chimerax.core.tools import ToolInstance
 from chimerax.ui import MainToolWindow
@@ -328,6 +329,18 @@ class ChimeraXScholARTool(ToolInstance):
         """
         Updates the target image for the augmentation.
         """
+        reply = QMessageBox.question(
+            self.tool_window.ui_area,
+            'Confirm Update',
+            'Are you sure you want to update the target image? This action will invalidate all usages of any previous '
+            'target image',
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+
+        if reply == QMessageBox.No:
+            return
+
         self.update_aug_files(target_image=True, augmented_file=False)
 
         image_path = ScARFileManager.get_augmentation_target_image_path(
