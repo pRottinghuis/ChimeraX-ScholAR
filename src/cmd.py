@@ -7,7 +7,7 @@ import os.path
 import shutil
 from typing import Union
 
-from chimerax.core.commands import CmdDesc, StringArg, BoolArg, SaveFileNameArg, SaveFolderNameArg
+from chimerax.core.commands import CmdDesc, StringArg, BoolArg, SaveFileNameArg, SaveFolderNameArg, OpenFileNameArg
 from chimerax.core.commands import run
 
 from .io import ScARFileManager, APIManager
@@ -408,7 +408,7 @@ save_aug_session_desc = CmdDesc(
     required=[('username', StringArg),
               ('project_title', StringArg),
               ('augmentation_title', StringArg)],
-    keyword=[('file_path', StringArg),
+    keyword=[('file_path', OpenFileNameArg),
              ('verbose', BoolArg)],
     synopsis="Save a session file to the augmentation"
 )
