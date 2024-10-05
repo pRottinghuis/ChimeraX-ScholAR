@@ -78,8 +78,8 @@ class ChimeraXScholARTool(ToolInstance):
 
         # Augmentation signals
         aug_sel_widget: ScholarSelAugWidget = self.main_layout.get_aug_sel_widget()
-        aug_sel_widget.select_existing_aug_signal.connect(lambda: self.select_existing_augmentation())
-        aug_sel_widget.create_new_aug_signal.connect(lambda: self.select_new_augmentation())
+        aug_sel_widget.select_existing_aug_signal.connect(lambda: self.select_augmentation(new_aug=False))
+        aug_sel_widget.create_new_aug_signal.connect(lambda: self.select_augmentation(new_aug=True))
 
         # Augmentation edit signals
         aug_edit_widget = self.main_layout.get_augmentation_edit_widget()
@@ -153,7 +153,9 @@ class ChimeraXScholARTool(ToolInstance):
         image_file_path = ScARFileManager.get_augmentation_target_image_path(
             self.active_user, self.active_project, self.active_augmentation)
         if image_file_path is None:
-            run(self.session, f"scholar downloadAugFiles \"{self.active_user}\" \"{self.active_project}\" \"{self.active_augmentation}\" targetImage True augmentedFile False")
+            run(self.session, f"scholar downloadAugFiles \"{self.active_user}\" \"{self.active_project}\" "
+                              f"\"{self.active_augmentation}\" targetImage True augmentedFile False",
+                log=False)
             image_file_path = ScARFileManager.get_augmentation_target_image_path(
                 self.active_user, self.active_project, self.active_augmentation)
 
@@ -162,7 +164,9 @@ class ChimeraXScholARTool(ToolInstance):
         self.main_layout.set_active_widget(ScholarMainLayout.AUGMENTATION_EDIT)
 
         run(self.session,
-            f"scholar openAugSession \"{self.active_user}\" \"{self.active_project}\" \"{self.active_augmentation}\"")
+            f"scholar openAugSession \"{self.active_user}\" \"{self.active_project}\" "
+            f"\"{self.active_augmentation}\"",
+            log=False)
 
     def login_back_page(self):
         """
@@ -265,44 +269,31 @@ class ChimeraXScholARTool(ToolInstance):
         """
         self.active_project = None
 
-    def select_existing_augmentation(self):
+    def select_augmentation(self, new_aug: bool):
         """
         Selects an existing augmentation.
         """
-        augmentation_title = self.main_layout.get_aug_sel_widget().get_existing_aug_selection()
-
-        # case where there is nothing in the selection box. Should do nothing.
+        if new_aug:
+            # For new aug get the title out of the new aug title text entry box
+            augmentation_title = self.main_layout.get_aug_sel_widget().get_new_aug_title()
+        else:
+            # For existing aug get the title out of the existing aug selection box
+            augmentation_title = self.main_layout.get_aug_sel_widget().get_existing_aug_selection()
+        # The selection/text box was empty so do nothing
         if augmentation_title == "":
             return
-
         run(self.session,
             f"scholar augmentation \"{self.active_user}\" \"{self.active_project}\" \"{augmentation_title}\"")
-
         # Check if somehow the augmentation was not created or set
         if ScARFileManager.get_augmentation(self.active_user, self.active_project, augmentation_title) is None:
             return
-
         # save the active augmentation and open the session if it exists
         self.active_augmentation = augmentation_title
-
-        self.select_aug_edit_page()
-
-    def select_new_augmentation(self):
-        """
-        Selects a new augmentation.
-        """
-        new_title = self.main_layout.get_aug_sel_widget().get_new_aug_title()
-        # New augmentation must have a title
-        if new_title == "":
-            return
-
-        run(self.session,
-            f"scholar augmentation \"{self.active_user}\" \"{self.active_project}\" \"{new_title}\"")
-
-        # Check if somehow the augmentation was not created or set
-        if ScARFileManager.get_augmentation(self.active_user, self.active_project, new_title) is None:
-            return
-        self.active_augmentation = new_title
+        # If there is no session saved yet save the current session to the augmentation.
+        if not ScARFileManager.has_session_file(self.active_user, self.active_project, self.active_augmentation):
+            run(self.session,
+                f"scholar saveAugSession \"{self.active_user}\" \"{self.active_project}\" "
+                f"\"{self.active_augmentation}\"", log=False)
         self.select_aug_edit_page()
 
     def close_aug(self):
