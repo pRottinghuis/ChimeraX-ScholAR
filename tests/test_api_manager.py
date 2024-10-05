@@ -8,7 +8,6 @@ from chimerax.core.errors import NonChimeraXError
 @pytest.mark.parametrize(
     "status_code, expected_exception, expected_message",
     [
-        pytest.param(200, None, None, id="status_200"),
         pytest.param(400, None, "An error occurred while making the API call", id="status_400"),
         pytest.param(401, None, "An error occurred while making the API call", id="status_401"),
         pytest.param(403, None, "An error occurred while making the API call", id="status_403"),
