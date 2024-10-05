@@ -39,6 +39,9 @@ class APIManager:
 
     MAX_FILE_SIZE_MB = 30
 
+    # This should get set when the bundle is initialized
+    logger = None
+
     @staticmethod
     def try_api_request(request_fn, *args, **kwargs) -> Optional[dict]:
         """
@@ -57,14 +60,14 @@ class APIManager:
         except requests.exceptions.RequestException as e:
             if response is None:
                 # The request did not make it to the server
-                print(f"An error occurred before the Schol-AR network request finished. \n Error: \n{e}")
+                APIManager.logger.error(f"An error occurred before the Schol-AR network request finished. \n Error: \n{e}")
                 return None
             if 500 <= response.status_code < 600:
                 raise NonChimeraXError(f"Schol-AR server error occurred making the API call: \n{response.url}"
                                        f"\n Error: \n{e}")
             else:
                 # The request was made but there is some other error
-                print(f"An error occurred while making the Schol-AR network call: \n{response.url}\n Error: \n{e}")
+                APIManager.logger.error(f"An error occurred while making the Schol-AR network call: \n{response.url}\n Error: \n{e}")
             return None
 
     @staticmethod
