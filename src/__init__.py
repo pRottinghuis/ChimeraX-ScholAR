@@ -83,6 +83,11 @@ class _MyAPI(BundleAPI):
 
         register(ci.name, desc, func)
 
+    @staticmethod
+    def initialize(session, bundle_info):
+        from .io import APIManager
+        APIManager.logger = session.logger
+
 
 # Create the ``bundle_api`` object that ChimeraX expects.
 bundle_api = _MyAPI()
