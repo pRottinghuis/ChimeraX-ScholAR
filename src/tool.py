@@ -460,6 +460,19 @@ class ChimeraXScholARTool(ToolInstance):
             self.close_project()
             self.select_login_page()
             run(self.session, f"scholar cleanLocal \"{user_for_clear}\"")
+        else:
+            # Confirmation popup to clean local for all users
+            reply = QMessageBox.question(
+                self.tool_window.ui_area,
+                'Confirm Clean Local',
+                'Are you sure you want to remove local files that no longer exist in Schol-AR for all local users?'
+                ' This action cannot be undone.',
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+
+            if reply == QMessageBox.Yes:
+                run(self.session, "scholar cleanLocal")
 
     def delete(self):
         """
