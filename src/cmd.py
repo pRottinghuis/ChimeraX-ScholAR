@@ -608,22 +608,25 @@ def format_file_extension(file_path: str, file_extension):
     return file_path
 
 
-def clean_local(session, username: str):
+def clean_local(session, username: str = None):
     """
     ChimeraX command to clean all the local files that are associated with projects or augmentations that no longer
-    exist on Schol-AR remote.
+    exist on Schol-AR remote. A username can be specified to target which user the files are deleted for. If no username
+    is specified, all users' files will be cleaned.
 
     :param session: The current ChimeraX session.
     :param username: The username of the Schol-AR user.
     """
-    if not username_exists(username):
-        return
+    target_usernames = [username]
+    if username is None or not username_exists(username):
+        target_usernames = ScARFileManager.list_usernames()
 
-    ScARFileManager.clean_local(username)
+    for username in target_usernames:
+        ScARFileManager.clean_local(username)
 
 
 clean_local_desc = CmdDesc(
-    required=[('username', StringArg)],
+    optional=[('username', StringArg)],
     synopsis="Clean all local files that are associated with projects or augmentations that no longer exist on Schol-AR"
 )
 
