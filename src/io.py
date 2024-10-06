@@ -346,6 +346,18 @@ class ScARFileManager:
         return any(aug.get(APIManager.AUGMENTATION_TITLE_KEY) == augmentation_title for aug in augmentations_info)
 
     @classmethod
+    def list_usernames(cls) -> list:
+        """
+        Get an array of all existing usernames.
+
+        :return: An array of all existing usernames.
+        """
+        users_info = cls.get_users_info()
+        if users_info is None:
+            return []
+        return list(users_info.keys())
+
+    @classmethod
     def init_scholar_dirs(cls):
         """
         Initialize the user structure with a base directory and user_info.json file. Initialize the Schol-AR main

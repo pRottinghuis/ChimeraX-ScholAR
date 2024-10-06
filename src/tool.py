@@ -101,11 +101,7 @@ class ChimeraXScholARTool(ToolInstance):
         """
         Sets up and displays the login page.
         """
-        users_info = ScARFileManager.get_users_info()
-        existing_users = []
-        if users_info is not None:
-            for user in users_info.keys():
-                existing_users.append(user)
+        existing_users = ScARFileManager.list_usernames()
 
         self.main_layout.get_login_widget().refresh_iu()
         self.main_layout.get_login_widget().set_login_combobox(existing_users)
