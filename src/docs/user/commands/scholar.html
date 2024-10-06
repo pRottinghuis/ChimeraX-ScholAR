@@ -1,0 +1,380 @@
+
+<!-- saved from url=(0076)https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html -->
+<html><!--
+=== UCSF ChimeraX Copyright ===
+Copyright 2016 Regents of the University of California.
+All rights reserved.  This software provided pursuant to a
+license agreement containing restrictions on its disclosure,
+duplication and use.  For details see:
+http://www.rbvi.ucsf.edu/chimerax/docs/licensing.html
+This notice must be embedded in or attached to all copies,
+including partial copies, of the software or any revisions
+or derivations thereof.
+=== UCSF ChimeraX Copyright ===
+--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="./command-scholar_files/userdocs.css">
+<title>Command: scholar</title>
+<style>@media (prefers-color-scheme: dark) { :root { color-scheme: dark; } }</style>
+</head><body>
+
+<a name="top"></a>
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/index.html">
+<img width="60px" src="./command-scholar_files/ChimeraX-docs-icon.svg" alt="ChimeraX docs icon" class="clRighticon" title="User Guide Index"></a>
+
+<h3><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/index.html#commands">Command</a>: scholar</h3>
+<p>
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR</a>
+is a website and associated software that allows users to create
+augmented reality overlays for their publication images.
+Users can create a Schol-AR account free of charge and
+upload 3D models from ChimeraX, which can then be linked to figures
+in a publication for viewing the associated 3D augmentations
+with a smartphone or web-based PDF viewer. Schol-AR is described in:
+</p>
+<blockquote>
+<a href="https://www.nature.com/articles/s41597-022-01426-y" target="_blank">
+Integrating data directly into publications with augmented reality and
+web-based technologies – Schol-AR.</a>
+Ard T, Bienkowski MS, Liew S, Sepehrband F, Yan L, Toga AW.
+<i>Sci Data</i> <b>9</b>(1):298 (2022).
+</blockquote>
+<p>
+See also:
+<a href="https://www.youtube.com/@schol-ar7559%20target=" _blank"="">Schol-AR
+YouTube videos</a>
+</p><p>
+The <b>scholar</b> command interfaces with the 
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+to allow:
+</p>
+<ul>
+<li>creating a user account
+</li><li>for a user, creating one or more <b><i>projects</i></b>,
+each corresponding to a single publication, poster, or presentation
+</li><li>within a project, creating one or more <b><i>augmentations</i></b>,
+each consisting of a 3D model to show in augmented reality and the
+corresponding target image that appears in the project
+(<i>e.g.</i>, a figure in the paper)
+</li><li>generating <a name="qr">QR codes</a> for each project:
+  <ul>
+  <li>a permanent, public QR code that should be included in the
+  publication, poster, or presentation
+  so that viewers can access the associated Schol-AR augmentations
+  </li><li>a private QR code that acts like a password to edit the project;
+  it should be kept private and is not guaranteed to be permanent
+  </li></ul>
+</li></ul>
+<p>
+Deleting projects and augmentations, however, can only be done at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>,
+</p>
+
+<a name="subcommands"></a>
+<p>
+The most common approach will be to use the
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html"><b>ScholAR</b></a> graphical interface.
+However, its functions are implemented as several <b>scholar</b> subcommands:
+</p>
+<ul>
+<li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#login"><b>scholar login</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#project"><b>scholar project</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#augmentation"><b>scholar augmentation</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#downloadQR"><b>scholar downloadQR</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#downloadAugFiles"><b>scholar downloadAugFiles</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#uploadAugFiles"><b>scholar uploadAugFiles</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#saveAugSession"><b>scholar saveAugSession</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#openAugSession"><b>scholar openAugSession</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeTargetImage"><b>scholar storeTargetImage</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeModel"><b>scholar storeModel</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeQRImage"><b>scholar storeQRImage</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeQRImage"><b>scholar storeQRImage</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeAllAugFiles"><b>scholar storeAllAugFiles</b></a>
+</li><li><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#cleanLocal"><b>scholar cleanLocal</b></a>
+</li></ul>
+
+<p>
+<a name="account"></a>
+Users who do not yet have a Schol-AR account should first go to the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>,
+register for an account, log in to the account, go the Profile settings,
+and then click “Get API Token.”
+The username, password, and API token should be noted down
+for future access to the account.
+</p>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="login"></a>
+<b>scholar login</b> &nbsp;<i>local-username</i>&nbsp;
+[&nbsp;<i>API-token</i>&nbsp;]
+<blockquote>
+Log in to the associated Schol-AR account and set up local files as needed.
+Users who have obtained an API token as described <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#account">above</a>
+but not yet created a local username must supply both a
+<i>local-username</i> and the obtained API token. 
+<a name="localname"></a>
+The <b><i>local username</i></b>
+is used by ChimeraX as a convenient alias to the API token
+and does not need to be the same as the username at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>.
+However:
+<table cellpadding="10px">
+<tbody><tr><td class="shaded">
+The local username and any other user-supplied strings in
+<b>scholar</b> commands must not contain any characters other than 
+letters, numbers, and spaces.
+<p>
+Note also that strings containing spaces should be enclosed in
+quotation marks.
+</p></td></tr>
+</tbody></table>
+<p>
+Users who have already created a local username and linked it to their
+API token can simply give that local username to log in.
+</p>
+<table class="clRight">
+<tbody><tr><td><img class="outline" src="./command-scholar_files/scholar-userdir.png" alt="scholar user directory"></td></tr>
+</tbody></table>
+<p>
+Technical details: Creating a new local username 
+creates a directory inside of app_dirs_unversioned called Schol-AR if it 
+does not already exist. Inside the Schol-AR folder, a user_info.json file 
+that stores all usernames and API tokens for one Chimerax installation 
+will be created/updated, and a folder titled with the username will be created.
+Inside the username-titled folder, projects_info.json is created/updated to
+store data for all of the projects of that user.
+</p>
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="project"></a>
+<b>scholar project</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+[&nbsp;<b>projectType</b>&nbsp;&nbsp;paper&nbsp;|&nbsp;poster&nbsp;|&nbsp;book&nbsp;|&nbsp;other&nbsp;]
+[&nbsp;<b>discUrl</b>&nbsp;&nbsp;<i>project-URL</i>&nbsp;]
+<blockquote>
+<p>
+Create a new project by giving a new <i>project-title</i>
+or choose an existing project by giving a <i>project-title</i> 
+that was created earlier. Specifying the project type
+and supplying an URL to be associated with the project, such as a link
+to a publication or institute, are optional. 
+</p>
+<table class="clRight">
+<tbody><tr><td><img class="outline" src="./command-scholar_files/scholar-projectdir.png" alt="scholar project directory"></td></tr>
+</tbody></table>
+<p>
+Technical details: Creating a new project updates the projects_info.json 
+in the user folder, and a folder inside of the username folder will be created
+and titled with the project’s 10-character identifier string. 
+Inside that folder, an augmentations_info.json file is created to hold data 
+for all of the project's augmentations. If an existing project is specified,
+augmentations_info.json will be updated as needed to synchronize
+with the project status at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>.
+</p>
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="augmentation"></a>
+<b>scholar augmentation</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>augmentation-title</i>&nbsp; 
+[&nbsp;<b>augmentationType</b>&nbsp;&nbsp;<b>model</b>&nbsp;]
+<blockquote>
+<p>
+Create a new augmentation by giving a new <i>augmentation-title</i>
+or choose an existing augmentation by giving an <i>augmentation-title</i>
+that was created earlier. The project must already exist.
+Currently only one type of augmentation can be created via ChimeraX 
+(3D model in GLB format), so <b>augmentationType</b> does not need to be
+given. 
+</p>
+<table class="clRight">
+<tbody><tr><td><img class="outline" src="./command-scholar_files/scholar-augdir.png" alt="scholar project directory"></td></tr>
+</tbody></table>
+<p>
+Technical details:
+Creating a new augmentation automatically runs
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#uploadAugFiles"><b>scholar uploadAugFiles</b></a>
+to upload the associated files and information to the 
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>.
+Locally, the project augmentation_info.json file is updated, and a
+folder named with the 4-character augmentation ID is created.
+In turn, it contains three more folders:
+augmented_file (for the 3D model GLB file), 
+cxs (for an associated <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html#session">ChimeraX session file</a>,
+see <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#saveAugSession"><b>scholar saveAugSession</b></a>),
+and target_image (for the target image PNG file). Finally,
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#saveAugSession"><b>scholar saveAugSession</b></a>
+is automatically run to save the current ChimeraX session to the cxs folder.
+A current limitation is that the GLB file size cannot exceed 30MB.
+Specifying an existing augmentation will update local files 
+if/as needed to synchronize with the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>.
+</p>
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="downloadQR"></a>
+<b>scholar downloadQR</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>
+<blockquote>
+Download the project <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#qr">QR files</a> from the 
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+to the local directory structure, within 
+Schol-AR/username/project_id/qr and then /admin or /pub for the private
+and public QR code images, respectively.
+This is done so that the QR codes can be displayed by the
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html"><b>ScholAR</b></a> graphical interface.
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="downloadAugFiles"></a>
+<b>scholar downloadAugFiles</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>augmentation-title</i>&nbsp; 
+[&nbsp;<b>targetImage</b>&nbsp;&nbsp;<b>true</b>&nbsp;|&nbsp;false&nbsp;]
+[&nbsp;<b>augmentedFile</b>&nbsp;&nbsp;true&nbsp;|&nbsp;<b>false</b>&nbsp;]
+<blockquote>
+Download augmentation files from the 
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+to the local directory structure, either the target image (default <b>true</b>),
+or the 3D model (default <b>false</b>, do not download), or both.
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="uploadAugFiles"></a>
+<b>scholar uploadAugFiles</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>augmentation-title</i>&nbsp; 
+[&nbsp;<b>targetImage</b>&nbsp;&nbsp;true&nbsp;|&nbsp;<b>false</b>&nbsp;]
+[&nbsp;<b>augmentedFile</b>&nbsp;&nbsp;<b>true</b>&nbsp;|&nbsp;false&nbsp;]
+<blockquote>
+Upload augmentation files from the local directory structure
+(such as after modifications in ChimeraX) to the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>,
+either the target image (default <b>false</b>, do not upload), or the 3D model
+(default <b>true</b>), or both.
+A current limitation is that the 3D model file size cannot exceed 30MB.
+<br><br>
+<table cellpadding="10px"><tbody><tr>
+<td class="shaded">
+The target image must match that in the media seen by the viewers
+(<i>e.g.</i>, the corresponding publication figure), so it is
+very important not to accidentally update/overwrite it
+when the appearance in ChimeraX is different.
+There is no way to recover the previous target image with the ChimeraX
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html"><b>ScholAR</b></a> tool, <b>scholar</b>
+command, or at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>.
+If the target image no longer matches the published image,
+others will no longer be able to view the associated augmentation.
+</td></tr></tbody></table>
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="saveAugSession"></a>
+<b>scholar saveAugSession</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>augmentation-title</i>&nbsp; 
+[&nbsp;<b>filePath</b>&nbsp;&nbsp;<i>existing-session-file</i>&nbsp;]
+<blockquote>
+Save a <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html#session">ChimeraX session file</a>
+in the augmentation's /cxs folder, either generated from the current state
+of ChimeraX (default) or by copying an existing session file specified
+with the <b>filePath</b> option, where <i>existing-session-file</i> is the desired pathname (directory location and filename)
+or the word <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/usageconventions.html#browse"><b>browse</b></a>
+to specify it interactively in a file browser window.
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="openAugSession"></a>
+<b>scholar openAugSession</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>augmentation-title</i>&nbsp; 
+<blockquote>
+Open the <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html#session">ChimeraX session file</a>, if any,
+found in the augmentation's /cxs folder.
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="storeTargetImage"></a>
+<b>scholar storeTargetImage</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>augmentation-title</i>&nbsp; 
+&nbsp;<i>pathname</i>
+<blockquote>
+Save a copy of the augmentation's target image PNG file
+to a location specified by the user, where <i>pathname</i> is the 
+desired pathname (directory location and filename)
+or the word <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/usageconventions.html#browse"><b>browse</b></a>
+to specify it interactively in a file browser window.
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="storeModel"></a>
+<b>scholar storeModel</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>augmentation-title</i>&nbsp; 
+&nbsp;<i>pathname</i>
+<blockquote>
+Save a copy of the augmentation's 3D model GLB file
+to a location specified by the user, where <i>pathname</i> is the 
+desired pathname (directory location and filename)
+or the word <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/usageconventions.html#browse"><b>browse</b></a>
+to specify it interactively in a file browser window.
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="storeQRImage"></a>
+<b>scholar storeQRImage</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>pathname</i>
+<blockquote>
+Save a copy of the project's public <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#qr">QR code</a> image file
+to a location specified by the user, where <i>pathname</i> is the 
+desired pathname (directory location and filename)
+or the word <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/usageconventions.html#browse"><b>browse</b></a>
+to specify it interactively in a file browser window.
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="storeAllAugFiles"></a>
+<b>scholar storeAllAugFiles</b>
+&nbsp;<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a>&nbsp;
+&nbsp;<i>project-title</i>&nbsp; 
+&nbsp;<i>augmentation-title</i>&nbsp; 
+&nbsp;<i>existing-directory</i>
+<blockquote>
+Save copies of the augmentation's target image PNG file and 3D model GLB file
+as well as the project's public <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#qr">QR code</a> image file
+to an existing directory (folder) specified by the user.
+</blockquote>
+
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#subcommands" class="nounder">•</a>
+<a name="cleanLocal"></a>
+<b>scholar cleanLocal</b>
+[ <b>username</b> <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#localname"><i>local-username</i></a> ]
+<blockquote>
+Remove all local files corresponding to augmentations and projects
+that have been deleted by the users at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>.
+Currently, such deletions should be initiated at the website; deleting
+files locally does not change what is in the website account. Specifying a username argument will remove all local files associated only with that username.
+</blockquote>
+
+<hr>
+<address>UCSF Resource for Biocomputing, Visualization, and Informatics / 
+October 2024</address>
+
+</body></html>
