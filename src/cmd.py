@@ -368,7 +368,9 @@ def aug_save_and_update(session, token: str, username: str, project_title: str, 
     )
     # something on the server failed check
     if updated_aug_info is None:
-        session.logger.warning(f"Failed to update augmentation {augmentation_title} for project {project_title}")
+        field_target = "target image" if target_update else "augmented file"
+        session.logger.warning(f"Failed to upload augmentation {field_target} for {augmentation_title} in project "
+                               f"{project_title}")
         return
     # make sure that the save files for the project are updated
     ScARFileManager.update_augs_info(username, project_title)
