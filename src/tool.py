@@ -35,7 +35,7 @@ class ChimeraXScholARTool(ToolInstance):
     """
     SESSION_ENDURING = True
     SESSION_SAVE = False
-    help = "help:user/tools/chimerax-scholar.html"
+    help = "help:user/tools/tool-scholar.html"
 
     def __init__(self, session, tool_name):
         """

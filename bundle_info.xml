@@ -28,7 +28,16 @@
 
   <!-- Non-Python files that are part of package -->
   <DataFiles>
-    <DataFile>docs/user/tools/chimerax-scholar.html</DataFile>
+    <DataFile>docs/user/commands/scholar.html</DataFile>
+    <DataFile>docs/user/commands/command-scholar_files/ChimeraX-docs-icon.svg</DataFile>
+    <DataFile>docs/user/commands/command-scholar_files/scholar-augdir.png</DataFile>
+    <DataFile>docs/user/commands/command-scholar_files/scholar-projectdir.png</DataFile>
+    <DataFile>docs/user/commands/command-scholar_files/scholar-userdir.png</DataFile>
+    <DataFile>docs/user/commands/command-scholar_files/userdocs.css</DataFile>
+    <DataFile>docs/user/tools/tool-scholar.html</DataFile>
+
+    <DataFile>docs/user/tools/tool-scholar_files/ChimeraX-docs-icon.svg</DataFile>
+    <DataFile>docs/user/tools/tool-scholar_files/userdocs.css</DataFile>
   </DataFiles>
 
   <ExtraFiles>
