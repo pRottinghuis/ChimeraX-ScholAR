@@ -1,0 +1,46 @@
+/*
+ * === UCSF ChimeraX Copyright ===
+ * Copyright 2016 Regents of the University of California.
+ * All rights reserved.  This software provided pursuant to a
+ * license agreement containing restrictions on its disclosure,
+ * duplication and use.  For details see:
+ * http://www.rbvi.ucsf.edu/chimerax/docs/licensing.html
+ * This notice must be embedded in or attached to all copies,
+ * including partial copies, of the software or any revisions
+ * or derivations thereof.
+ * === UCSF ChimeraX Copyright ===
+ */
+
+a.nounder:link {text-decoration: none}
+a.nounder:visited {text-decoration: none}
+a.nounder:hover {text-decoration: underline; color: red;}
+
+img.flRight {float: right; margin: 4px}
+img.clRight {float: right; clear: right; margin: 4px}
+img.clRighticon {float: right; clear: right; margin: 4px; background:white}
+img.flLeft {float: left; margin: 4px}
+img.clLeft {float: left; clear: left; margin: 4px}
+img.outline {border: 1px solid black}
+img.outlineCR {border: 1px solid black; margin: 4px; float:right; clear:right}
+img.outlineCL {border: 1px solid black; margin: 4px; float:left; clear:left}
+img.iconbar {height:20px; margin: 1px -1px; vertical-align:middle; background-color:white}
+img.icon {width:20px; margin: 1px -1px; vertical-align:middle; background-color:white}
+img.icon2 {width:30px; margin: 1px 1px; vertical-align:middle; background-color:white}
+img.icon3 {width:25px; margin: 1px 0px; vertical-align:middle; background-color:white}
+img.icon4 {width:35px; background-color:white}
+
+table.clRight {float:right; clear:right; margin: 4px}
+table.clLeft {float:left; clear:left; margin: 4px}
+td.text {padding-left: 5px; padding-right: 5px}
+th.shaded {color:black; background-color:#eaeaea; padding-left: 5px; padding-right: 5px}
+td.shaded {color:black; background-color:#eaeaea; }
+
+ul.circle {list-style-type: circle}
+ul.none {list-style-type: none}
+span.nowrap {white-space: nowrap}
+
+p.nav {font-size: 85%; margin-top: -10; margin-bottom: 0px; 
+   text-align: right; position: relative; top: 20px }
+p.nav2 {font-size: 85%; text-align: left}
+
+h3.usage {font-weight: normal}
