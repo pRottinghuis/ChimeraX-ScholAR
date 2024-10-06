@@ -1,5 +1,5 @@
 <BundleInfo name="ChimeraX-ScholAR"
-	    version="0.4.2" package="chimerax.scholar"
+	    version="1.0" package="chimerax.scholar"
   	    minSessionVersion="1" maxSessionVersion="1" customInit="true">
 
   <Author>UCSF RBVI</Author>
@@ -28,7 +28,7 @@
 
   <!-- Non-Python files that are part of package -->
   <DataFiles>
-    <DataFile>docs/user/tools/chimerax-scholar.html</DataFile>
+    <DataDir>docs</DataDir>
   </DataFiles>
 
   <ExtraFiles>
