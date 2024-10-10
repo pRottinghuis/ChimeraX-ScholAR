@@ -1,5 +1,5 @@
 <BundleInfo name="ChimeraX-ScholAR"
-	    version="0.4.2" package="chimerax.scholar"
+	    version="0.5.0" package="chimerax.scholar"
   	    minSessionVersion="1" maxSessionVersion="1" customInit="true">
 
   <Author>UCSF RBVI</Author>
@@ -28,16 +28,7 @@
 
   <!-- Non-Python files that are part of package -->
   <DataFiles>
-    <DataFile>docs/user/commands/scholar.html</DataFile>
-    <DataFile>docs/user/commands/command-scholar_files/ChimeraX-docs-icon.svg</DataFile>
-    <DataFile>docs/user/commands/command-scholar_files/scholar-augdir.png</DataFile>
-    <DataFile>docs/user/commands/command-scholar_files/scholar-projectdir.png</DataFile>
-    <DataFile>docs/user/commands/command-scholar_files/scholar-userdir.png</DataFile>
-    <DataFile>docs/user/commands/command-scholar_files/userdocs.css</DataFile>
-    <DataFile>docs/user/tools/tool-scholar.html</DataFile>
-
-    <DataFile>docs/user/tools/tool-scholar_files/ChimeraX-docs-icon.svg</DataFile>
-    <DataFile>docs/user/tools/tool-scholar_files/userdocs.css</DataFile>
+    <DataDir>docs</DataDir>
   </DataFiles>
 
   <ExtraFiles>
