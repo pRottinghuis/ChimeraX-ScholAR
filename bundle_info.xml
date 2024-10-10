@@ -1,5 +1,5 @@
 <BundleInfo name="ChimeraX-ScholAR"
-	    version="0.5.0" package="chimerax.scholar"
+	    version="1.0" package="chimerax.scholar"
   	    minSessionVersion="1" maxSessionVersion="1" customInit="true">
 
   <Author>UCSF RBVI</Author>
