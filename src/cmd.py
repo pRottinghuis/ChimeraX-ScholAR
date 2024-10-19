@@ -13,7 +13,7 @@ from chimerax.core.commands import run
 from .io import ScARFileManager, APIManager
 
 
-def login(session, username: str, api_token: Union[str, None] = None):
+def login(session, username: str, api_token: Union[str, None] = None, **kwargs):
     """
     ChimeraX command that is used to log in a Schol-AR chimerax user. If the user does not exist, the user's name and
     Schol-AR API token will be saved together into a save file that is used to keep track of all users. If the user
@@ -41,15 +41,17 @@ def login(session, username: str, api_token: Union[str, None] = None):
 
     if not APIManager.validate_api_token(user_token):
         # exit on invalid api token
-        session.logger.warning(f"Invalid API token: {user_token}")
+        session.logger.warning(f"Invalid API token for: {username}")
         return
 
     ScARFileManager.update_users_info(username, user_token)
 
     ScARFileManager.update_user_projects(username)
+    session.logger.info("Succesfully logged into Schol-AR as: " + username)
 
 
 login_desc = CmdDesc(
+    self_logging=True,
     required=[('username', StringArg)],
     optional=[('api_token', StringArg)],
     synopsis="Store Username and API Token for Schol-AR"
@@ -176,7 +178,7 @@ def augmentation(session, username: str, project_title: str, augmentation_title:
 
     if not valid_input_string(augmentation_title):
         session.logger.warning("Invalid augmentation title. Augmentation titles can contain only letters, numbers, and "
-                            "spaces.")
+                               "spaces.")
         return
 
     if augmentation_type != "model":
