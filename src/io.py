@@ -43,7 +43,7 @@ class APIManager:
     logger = None
 
     @staticmethod
-    def try_api_request(request_fn, *args, **kwargs) -> Optional[dict]:
+    def try_api_request(request_fn, expecting_error=False, *args, **kwargs) -> Optional[dict]:
         """
         Try to make an API request and return the response if successful. Print an error message if the request fails.
 
@@ -67,6 +67,8 @@ class APIManager:
                                        f"\n Error: \n{e}")
             else:
                 # The request was made but there is some other error
+                if expecting_error:
+                    return None
                 APIManager.logger.error(f"An error occurred while making the Schol-AR network call: \n{response.url}\n Error: \n{e}")
             return None
 
