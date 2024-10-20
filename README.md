@@ -198,13 +198,13 @@ The ChimeraX **ScholAR** tool interfaces with the [Schol-AR website](https://www
 - creating a user account
 - for a user, creating one or more **projects**, each corresponding to a single publication, poster, or presentation
 - within a project, creating one or more **augmentations**, each consisting of a 3D model to show in augmented reality and the corresponding target image that appears in the project (*e.g.*, a figure in the paper)
-- generating QR codes for each project:
+- <span id="generate-qr-codes">generating QR codes for each project:</span>
   - a permanent, public QR code that should be included in the publication, poster, or presentation so that viewers can access the associated Schol-AR augmentations
   - a private QR code that acts like a password to edit the project; it should be kept private and is not guaranteed to be permanent
 
 Deleting an augmentation or project (if desired) should be done at the [Schol-AR website](https://www.schol-ar.io/). After that happens, the local copies of the associated files can be removed by choosing **Clean Project Files** from the [context menu](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/window.html#context-menu) of the **ScholAR** tool.
 
-The **ScholAR** tool is also implemented as the [**scholar** command](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html). See also: [**save**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html)
+The **ScholAR** tool is also implemented as the [**scholar** command](#command-scholar). See also: [**save**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html)
 
 > [Schol-AR Login](#schol-ar-login)  
 > [Project Specification](#project-specification)  
@@ -220,9 +220,9 @@ Users who do not yet have a Schol-AR account should first go to the [Schol-AR we
 - Users who have not yet logged in to Schol-AR on this device should **Create New User** by entering the following and clicking **Submit**:
   - **Username** – a **local username** to be used by ChimeraX as a convenient alias to the API token; this does not need to be the same as the username at the [Schol-AR website](https://www.schol-ar.io/)
     - The local username and any other strings input to this tool must not contain any characters other than letters, numbers, and spaces.
-  - **API Token** – the API token obtained from the [Schol-AR website](https://www.schol-ar.io/) as described [above](#account)
+  - **API Token** – the API token obtained from the [Schol-AR website](https://www.schol-ar.io/) as described above
 
-A successful login switches the panel to the [projects](#projects) section.
+A successful login switches the panel to the [projects](#project-specification) section.
 
 ### Project Specification
 
@@ -241,7 +241,7 @@ Alternatively, a new project can be specified by entering a title *etc.* and cli
 Specifying a project switches the panel to the [augmentations](#augmentations) section. Other buttons:
 
 - **View at Schol-AR.io** – go to the user account at the [Schol-AR website](https://www.schol-ar.io/)
-- **New Login** – return to [login](#login)
+- **New Login** – return to [login](#schol-ar-login)
 
 ### Augmentations
 
@@ -250,19 +250,19 @@ A new augmentation (a 3D model in GLB format) can be created from the current co
 Specifying an augmentation shows its target image and additional buttons for modifying the augmentation:
 
 - **Update Target Image** – update the target image in the thumbnail and at the [Schol-AR website](https://www.schol-ar.io/)
-  - The target image must match that in the media seen by the viewers (*e.g.*, the corresponding publication figure), so it is very important not to accidentally update/overwrite it when the appearance in ChimeraX is different. There is no way to recover the previous target image with the ChimeraX **ScholAR** tool, [**scholar** command](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html), or at the [Schol-AR website](https://www.schol-ar.io/). If the target image no longer matches the published image, others will no longer be able to view the associated augmentation.
+  - >The target image must match that in the media seen by the viewers (*e.g.*, the corresponding publication figure), so it is very important not to accidentally update/overwrite it when the appearance in ChimeraX is different. There is no way to recover the previous target image with the ChimeraX **ScholAR** tool, [**scholar** command](#command-scholar), or at the [Schol-AR website](https://www.schol-ar.io/). If the target image no longer matches the published image, others will no longer be able to view the associated augmentation.
 - **Update Model** – update the 3D model at the [Schol-AR website](https://www.schol-ar.io/); a current limitation is that the file size cannot exceed 30MB
-- **Preview** – open a separate window displaying a larger version of the target image and the two [QR codes](#qr) for the project, to allow previewing the augmentation with a mobile device
-- **Save Files Locally** – open a file browser to save the augmentation target image, augmentation 3D model file, and the public [QR code](#qr) for the project
+- **Preview** – open a separate window displaying a larger version of the target image and the two [QR codes](#generate-qr-codes) for the project, to allow previewing the augmentation with a mobile device
+- **Save Files Locally** – open a file browser to save the augmentation target image, augmentation 3D model file, and the public [QR code](#generate-qr-codes) for the project
 - **Save and Close** – save a [ChimeraX session](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html#session) and [close](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/close.html) the current session (this also occurs whenever the user navigates to a different section of the dialog, such as by using the buttons below)
 
 Other buttons:
 
 - **View at Schol-AR.io** – go to the user account at the [Schol-AR website](https://www.schol-ar.io/)
-- **New Login** – return to [login](#login)
-- **Projects** – return to [projects](#projects)
+- **New Login** – return to [login](#schol-ar-login)
+- **Projects** – return to [projects](#project-specification)
 - **Augmentations** – return to [choosing an augmentation](#augmentations)
-- **Store QR** – open a file browser to save the public [QR code](#qr) for the project
+- **Store QR** – open a file browser to save the public [QR code](#generate-qr-codes) for the project
 
 ---
 
