@@ -23,20 +23,20 @@ Deleting projects and augmentations, however, can only be done at the [Schol-AR 
 
 The most common approach will be to use the [ScholAR](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html) graphical interface. However, its functions are implemented as several **scholar** subcommands:
 
-- [**scholar login**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#login)
-- [**scholar project**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#project)
-- [**scholar augmentation**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#augmentation)
-- [**scholar downloadQR**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#downloadQR)
-- [**scholar downloadAugFiles**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#downloadAugFiles)
-- [**scholar uploadAugFiles**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#uploadAugFiles)
-- [**scholar saveAugSession**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#saveAugSession)
-- [**scholar openAugSession**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#openAugSession)
-- [**scholar storeTargetImage**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeTargetImage)
-- [**scholar storeModel**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeModel)
-- [**scholar storeQRImage**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeQRImage)
-- [**scholar storeAllAugFiles**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#storeAllAugFiles)
-- [**scholar cleanLocal**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#cleanLocal)
-- [**scholar removeUser**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#removeUser)
+- [**scholar login**](#scholar-login-local-username-api-token)
+- [**scholar project**](#scholar-project-local-username-project-title-projecttype-paper--poster--book--other-discurl-project-url)
+- [**scholar augmentation**](#scholar-augmentation-local-username-project-title-augmentation-title-augmentationtype-model)
+- [**scholar downloadQR**](#scholar-downloadqr-local-username-project-title)
+- [**scholar downloadAugFiles**](#scholar-downloadaugfiles-local-username-project-title-augmentation-title-targetimage-true--false-augmentedfile-true--false)
+- [**scholar uploadAugFiles**](#scholar-uploadaugfiles-local-username-project-title-augmentation-title-targetimage-true--false-augmentedfile-true--false)
+- [**scholar saveAugSession**](#scholar-saveaugsession-local-username-project-title-augmentation-title-filepath-existing-session-file)
+- [**scholar openAugSession**](#scholar-openaugsession-local-username-project-title-augmentation-title)
+- [**scholar storeTargetImage**](#scholar-storetargetimage-local-username-project-title-augmentation-title-pathname)
+- [**scholar storeModel**](#scholar-storemodel-local-username-project-title-augmentation-title-pathname)
+- [**scholar storeQRImage**](#scholar-storeqrimage-local-username-project-title-pathname)
+- [**scholar storeAllAugFiles**](#scholar-storeallaugfiles-local-username-project-title-augmentation-title-existing-directory)
+- [**scholar cleanLocal**](#scholar-cleanlocal-username-local-username)
+- [**scholar removeUser**](#scholar-removeuser-local-username)
 
 ## scholar login _local-username_ [_API-token_]
 
