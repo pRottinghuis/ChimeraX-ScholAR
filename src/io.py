@@ -358,6 +358,25 @@ class ScARFileManager:
         return list(users_info.keys())
 
     @classmethod
+    def remove_username(cls, username: str) -> bool:
+        """
+        Remove a username-api-token pairing from the user_info.json file.
+        :param username: Username to remove from the file
+        :return: True if the username was removed, False if the username doesn't exist
+        """
+
+        # This will inherently also make sure that the user_info file exists
+        if not cls.username_exists(username):
+            return False
+
+        users_info = cls.get_users_info()
+        users_info.pop(username)
+
+        with open(cls.USERS_INFO_PATH, 'w') as file:
+            json.dump(users_info, file, indent=4)
+        return True
+
+    @classmethod
     def init_scholar_dirs(cls):
         """
         Initialize the user structure with a base directory and user_info.json file. Initialize the Schol-AR main
