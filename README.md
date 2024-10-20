@@ -70,7 +70,7 @@ it does not already exist. Inside the Schol-AR folder, a user_info.json file tha
 for one Chimerax installation will be created/updated, and a folder titled with the username will be created. Inside the 
 username-titled folder, projects_info.json is created/updated to store data for all of the projects of that user.
 
-### scholar project _local-username_ _project-title_ [_projectType_ paper | poster | book | other] [_discUrl_ _project-URL_]
+### scholar project <a href="#local-username">_local-username_</a> _project-title_ [_projectType_ paper | poster | book | other] [_discUrl_ _project-URL_]
 
 Create a new project by giving a new _project-title_ or choose an existing project by giving a _project-title_ that was 
 created earlier. Specifying the project type and supplying an URL to be associated with the project, such as a link to a 
@@ -84,7 +84,7 @@ an augmentations_info.json file is created to hold data for all of the project's
 is specified, augmentations_info.json will be updated as needed to synchronize with the project status at the 
 [Schol-AR website](https://www.schol-ar.io/).
 
-### scholar augmentation _local-username_ _project-title_ _augmentation-title_ [_augmentationType_ **model**]
+### scholar augmentation <a href="#local-username">_local-username_</a> _project-title_ _augmentation-title_ [_augmentationType_ **model**]
 
 Create a new augmentation by giving a new _augmentation-title_ or choose an existing augmentation by giving an 
 _augmentation-title_ that was created earlier. The project must already exist. Currently only one type of augmentation 
@@ -104,19 +104,19 @@ is automatically run to save the current ChimeraX session to the cxs folder. A c
 size cannot exceed 30MB. Specifying an existing augmentation will update local files if/as needed to synchronize with 
 the [Schol-AR website](https://www.schol-ar.io/).
 
-### scholar downloadQR _local-username_ _project-title_
+### scholar downloadQR <a href="#local-username">_local-username_</a> _project-title_
 
 Download the project QR files from the [Schol-AR website](https://www.schol-ar.io/) to the local directory structure, 
 within Schol-AR/username/project_id/qr and then /admin or /pub for the private and public QR code images, respectively. 
 This is done so that the QR codes can be displayed by the [ScholAR](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html) 
 graphical interface.
 
-### scholar downloadAugFiles _local-username_ _project-title_ _augmentation-title_ [_targetImage_ **true** | false] [_augmentedFile_ true | **false**]
+### scholar downloadAugFiles <a href="#local-username">_local-username_</a> _project-title_ _augmentation-title_ [_targetImage_ **true** | false] [_augmentedFile_ true | **false**]
 
 Download augmentation files from the [Schol-AR website](https://www.schol-ar.io/) to the local directory structure, 
 either the target image (default **true**), or the 3D model (default **false**, do not download), or both.
 
-### scholar uploadAugFiles _local-username_ _project-title_ _augmentation-title_ [_targetImage_ true | **false**] [_augmentedFile_ **true** | false]
+### scholar uploadAugFiles <a href="#local-username">_local-username_</a> _project-title_ _augmentation-title_ [_targetImage_ true | **false**] [_augmentedFile_ **true** | false]
 
 Upload augmentation files from the local directory structure (such as after modifications in ChimeraX) to the 
 [Schol-AR website](https://www.schol-ar.io/), either the target image (default **false**, do not upload), or the 3D model 
@@ -128,7 +128,7 @@ Upload augmentation files from the local directory structure (such as after modi
 > tool, **scholar** command, or at the [Schol-AR website](https://www.schol-ar.io/). If the target image no longer 
 > matches the published image, others will no longer be able to view the associated augmentation.
 
-### scholar saveAugSession _local-username_ _project-title_ _augmentation-title_ [_filePath_ _existing-session-file_]
+### scholar saveAugSession <a href="#local-username">_local-username_</a> _project-title_ _augmentation-title_ [_filePath_ _existing-session-file_]
 
 Save a [ChimeraX session file](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html#session) in the 
 augmentation's /cxs folder, either generated from the current state of ChimeraX (default) or by copying an existing 
@@ -136,45 +136,45 @@ session file specified with the **filePath** option, where _existing-session-fil
 location and filename) or the word [**browse**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/usageconventions.html#browse) 
 to specify it interactively in a file browser window.
 
-### scholar openAugSession _local-username_ _project-title_ _augmentation-title_
+### scholar openAugSession <a href="#local-username">_local-username_</a> _project-title_ _augmentation-title_
 
 Open the [ChimeraX session file](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html#session), if 
 any, found in the augmentation's /cxs folder.
 
-### scholar storeTargetImage _local-username_ _project-title_ _augmentation-title_ _pathname_
+### scholar storeTargetImage <a href="#local-username">_local-username_</a> _project-title_ _augmentation-title_ _pathname_
 
 Save a copy of the augmentation's target image PNG file to a location specified by the user, where _pathname_ is the 
 desired pathname (directory location and filename) or the word 
 [**browse**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/usageconventions.html#browse) to specify it 
 interactively in a file browser window.
 
-### scholar storeModel _local-username_ _project-title_ _augmentation-title_ _pathname_
+### scholar storeModel <a href="#local-username">_local-username_</a> _project-title_ _augmentation-title_ _pathname_
 
 Save a copy of the augmentation's 3D model GLB file to a location specified by the user, where _pathname_ is the desired
 pathname (directory location and filename) or the word 
 [**browse**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/usageconventions.html#browse) to specify it 
 interactively in a file browser window.
 
-### scholar storeQRImage _local-username_ _project-title_ _pathname_
+### scholar storeQRImage <a href="#local-username">_local-username_</a> _project-title_ _pathname_
 
 Save a copy of the project's public QR code image file to a location specified by the user, where _pathname_ is the 
 desired pathname (directory location and filename) or the word 
 [**browse**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/usageconventions.html#browse) to specify it
 interactively in a file browser window.
 
-### scholar storeAllAugFiles _local-username_ _project-title_ _augmentation-title_ _existing-directory_
+### scholar storeAllAugFiles <a href="#local-username">_local-username_</a> _project-title_ _augmentation-title_ _existing-directory_
 
 Save copies of the augmentation's target image PNG file and 3D model GLB file as well as the project's public QR code 
 image file to an existing directory (folder) specified by the user.
 
-### scholar cleanLocal [_username_ _local-username_]
+### scholar cleanLocal [_username_ <a href="#local-username">_local-username_</a>]
 
 Remove all local files corresponding to augmentations and projects that have been deleted by the users at the 
 [Schol-AR website](https://www.schol-ar.io/). Currently, such deletions should be initiated at the website; deleting 
 files locally does not change what is in the website account. Specifying a username argument will remove all local 
 files associated only with that username.
 
-### scholar removeUser _local-username_
+### scholar removeUser <a href="#local-username">_local-username_</a>
 
 Remove a ChimeraX Schol-AR user and all related ChimeraX stored data. This action cannot be undone.
 
