@@ -91,13 +91,13 @@ can be created via ChimeraX (3D model in GLB format), so **augmentationType** do
 ![scholar project directory](./src/docs/user/commands/command-scholar_files/scholar-augdir.png)
 
 Technical details: Creating a new augmentation automatically runs 
-[**scholar uploadAugFiles**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#uploadAugFiles) 
+[**scholar uploadAugFiles**](#scholar-uploadaugfiles-local-username-project-title-augmentation-title-targetimage-true--false-augmentedfile-true--false) 
 to upload the associated files and information to the [Schol-AR website](https://www.schol-ar.io/). Locally, the project
 augmentation_info.json file is updated, and a folder named with the 4-character augmentation ID is created. In turn, it 
 contains three more folders: augmented_file (for the 3D model GLB file), cxs (for an associated 
 [ChimeraX session file](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html#session), see 
-[**scholar saveAugSession**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#saveAugSession)), 
-and target_image (for the target image PNG file). Finally, [**scholar saveAugSession**](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html#saveAugSession) 
+[**scholar saveAugSession**](#scholar-saveaugsession-local-username-project-title-augmentation-title-filepath-existing-session-file)), 
+and target_image (for the target image PNG file). Finally, [**scholar saveAugSession**](#scholar-saveaugsession-local-username-project-title-augmentation-title-filepath-existing-session-file) 
 is automatically run to save the current ChimeraX session to the cxs folder. A current limitation is that the GLB file 
 size cannot exceed 30MB. Specifying an existing augmentation will update local files if/as needed to synchronize with 
 the [Schol-AR website](https://www.schol-ar.io/).
