@@ -54,7 +54,7 @@ API token should be noted down for future access to the account.
 Log in to the associated Schol-AR account and set up local files as needed. Users who have obtained an API token as 
 described above but not yet created a local username must supply both a _local-username_ and the obtained API token.
 
-The **_local username_** is used by ChimeraX as a convenient alias to the API token and does not need to be the same as 
+The <span id="local-username">**_local username_**</span> is used by ChimeraX as a convenient alias to the API token and does not need to be the same as 
 the username at the [Schol-AR website](https://www.schol-ar.io/). However:
 
 > The local username and any other user-supplied strings in **scholar** commands must not contain any characters other than letters, numbers, and spaces.
