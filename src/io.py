@@ -100,7 +100,7 @@ class APIManager:
         """
         url = 'https://www.Schol-AR.io/api/ListARP'
         headers = {'Authorization': f'Token {api_token}'}
-        return APIManager.try_api_request(requests.get, url, headers=headers)
+        return APIManager.try_api_request(requests.get, False, url, headers=headers)
 
     @staticmethod
     def create_project(api_token: str, project_title: str, project_type: str, disc_url: str) -> Optional[dict]:
@@ -124,7 +124,7 @@ class APIManager:
             APIManager.PROJECT_TYPE_KEY: project_type,
             APIManager.PROJECT_DISC_URL_KEY: disc_url
         }
-        return APIManager.try_api_request(requests.post, url, headers=headers, json=data)
+        return APIManager.try_api_request(requests.post, False, url, headers=headers, json=data)
 
     @staticmethod
     def get_qr_data(token: str, qr_string: str) -> Optional[dict]:
@@ -137,7 +137,7 @@ class APIManager:
         """
         url = f'https://www.Schol-AR.io/api/GetQR/{qr_string}'
         headers = {'Authorization': f'Token {token}'}
-        return APIManager.try_api_request(requests.get, url, headers=headers)
+        return APIManager.try_api_request(requests.get, False, url, headers=headers)
 
     @staticmethod
     def list_augs(api_token: str, qr_string: str) -> Optional[dict]:
@@ -150,7 +150,7 @@ class APIManager:
         """
         url = f'https://www.Schol-AR.io/api/ListAug/{qr_string}'
         headers = {'Authorization': f'Token {api_token}'}
-        return APIManager.try_api_request(requests.get, url, headers=headers)
+        return APIManager.try_api_request(requests.get, False, url, headers=headers)
 
     @staticmethod
     def create_augmentation(
@@ -170,7 +170,7 @@ class APIManager:
             APIManager.AUGMENTATION_TITLE_KEY: augmentation_title,
             APIManager.AUGMENTATION_TYPE_KEY: augmentation_type,
         }
-        return APIManager.try_api_request(requests.post, url, headers=headers, json=data)
+        return APIManager.try_api_request(requests.post, False, url, headers=headers, json=data)
 
     @staticmethod
     def edit_augmentation(token: str, qrstring: str, aug_id: str, file_path: str,
@@ -196,7 +196,7 @@ class APIManager:
             files[APIManager.AUGMENTATION_TARGET_KEY] = open(file_path, 'rb')
         else:
             files[APIManager.AUGMENTATION_AUG_FILE_KEY] = open(file_path, 'rb')
-        return APIManager.try_api_request(requests.patch, url, headers=headers, files=files)
+        return APIManager.try_api_request(requests.patch, False, url, headers=headers, files=files)
 
     @staticmethod
     def download_file_from_url(url: str, save_dir: str):
