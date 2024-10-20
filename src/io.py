@@ -363,7 +363,7 @@ class ScARFileManager:
     @classmethod
     def remove_user(cls, username: str) -> bool:
         """
-        Remove a username-api-token pairing from the user_info.json file.
+        Remove a username-api-token pairing from the user_info.json file and delete all user data.
         :param username: Username to remove from the file
         :return: True if the username was removed, False if the username doesn't exist
         """
@@ -371,6 +371,10 @@ class ScARFileManager:
         # This will inherently also make sure that the user_info file exists
         if not cls.username_exists(username):
             return False
+
+        # Delete the entire user directory if the user's API token is invalid
+        user_dir = os.path.join(cls.BASE_DIR, username)
+        shutil.rmtree(user_dir)
 
         users_info = cls.get_users_info()
         users_info.pop(username)
@@ -961,9 +965,7 @@ class ScARFileManager:
             return
 
         if not APIManager.validate_api_token(cls.get_user_token(username)):
-            # Delete the entire user directory if the user's API token is invalid
-            user_dir = os.path.join(cls.BASE_DIR, username)
-            shutil.rmtree(user_dir)
+            APIManager.logger.warning(f"Found user: {username} with an invalid API token. Consider deleting the user.")
             return
 
         # Make sure that the user's projects are up-to-date
