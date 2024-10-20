@@ -620,8 +620,12 @@ def clean_local(session, username: str = None):
     :param username: The username of the Schol-AR user.
     """
     target_usernames = [username]
-    if username is None or not username_exists(username):
+
+    if username is None:
         target_usernames = ScARFileManager.list_usernames()
+    elif not username_exists(username):
+        session.logger.warning(f"Cannot Clean Local. User {username} not found")
+        return
 
     for username in target_usernames:
         ScARFileManager.clean_local(username)
@@ -630,6 +634,27 @@ def clean_local(session, username: str = None):
 clean_local_desc = CmdDesc(
     optional=[('username', StringArg)],
     synopsis="Clean all local files that are associated with projects or augmentations that no longer exist on Schol-AR"
+)
+
+
+def remove_user(session, username: str):
+    """
+    ChimeraX command to remove a user from the Schol-AR directory structure. This command will remove the user's
+    directory and all associated projects and augmentations.
+
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    """
+
+    if ScARFileManager.remove_user(username):
+        session.logger.info(f"User {username} removed")
+        return
+    session.logger.warning(f"Can't remove user {username} because it was not found")
+
+
+remove_user_desc = CmdDesc(
+    required=[('username', StringArg)],
+    synopsis="Remove a user from the Schol-AR directory structure"
 )
 
 
