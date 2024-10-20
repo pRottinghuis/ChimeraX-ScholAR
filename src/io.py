@@ -361,7 +361,7 @@ class ScARFileManager:
         return list(users_info.keys())
 
     @classmethod
-    def remove_username(cls, username: str) -> bool:
+    def remove_user(cls, username: str) -> bool:
         """
         Remove a username-api-token pairing from the user_info.json file.
         :param username: Username to remove from the file

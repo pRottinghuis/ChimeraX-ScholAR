@@ -642,7 +642,7 @@ def remove_user(session, username: str):
     :param username: The username of the Schol-AR user.
     """
 
-    if ScARFileManager.remove_username(username):
+    if ScARFileManager.remove_user(username):
         session.logger.info(f"User {username} removed")
         return
     session.logger.warning(f"Can't remove user {username} because it was not found")
