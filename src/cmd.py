@@ -620,8 +620,12 @@ def clean_local(session, username: str = None):
     :param username: The username of the Schol-AR user.
     """
     target_usernames = [username]
-    if username is None or not username_exists(username):
+
+    if username is None:
         target_usernames = ScARFileManager.list_usernames()
+    elif not username_exists(username):
+        session.logger.warning(f"Cannot Clean Local. User {username} not found")
+        return
 
     for username in target_usernames:
         ScARFileManager.clean_local(username)
