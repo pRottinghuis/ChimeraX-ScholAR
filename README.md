@@ -1,6 +1,8 @@
 # Command: scholar
 
-<img src="./src/docs/user/commands/command-scholar_files/ChimeraX-docs-icon.svg" alt="ChimeraX docs icon" width="60">
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/index.html">
+  <img src="./src/docs/user/commands/command-scholar_files/ChimeraX-docs-icon.svg" alt="ChimeraX docs icon" width="60">
+</a>
 
 [Schol-AR](https://www.schol-ar.io/) is a website and associated software that allows users to create augmented reality 
 overlays for their publication images. Users can create a Schol-AR account free of charge and upload 3D models from ChimeraX, 
@@ -178,7 +180,10 @@ Remove a ChimeraX Schol-AR user and all related ChimeraX stored data. This actio
 
 # Tool: ScholAR
 
-[![ChimeraX docs icon](./tool-scholar_files/ChimeraX-docs-icon.svg)](https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/index.html)
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/index.html">
+  <img src="./src/docs/user/tools/tool-scholar_files/ChimeraX-docs-icon.svg" alt="ChimeraX docs icon" width="60">
+</a>
+
 
 [Schol-AR](https://www.schol-ar.io/) is a website and associated software that allows users to create augmented reality overlays for their publication images. Users can create a Schol-AR account free of charge and upload 3D models from ChimeraX, which can then be linked to figures in a publication for viewing the associated 3D augmentations with a smartphone or web-based PDF viewer. Schol-AR is described in:
 
