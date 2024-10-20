@@ -82,6 +82,9 @@
 
     <ChimeraXClassifier>ChimeraX :: Command :: scholar cleanLocal :: General ::
       Clean all local files that are associated with projects or augmentations that no longer exist on Schol-AR. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar removeUser :: General ::
+      Remove a user from the Schol-AR directory structure. </ChimeraXClassifier>
   </Classifiers>
 
 </BundleInfo>

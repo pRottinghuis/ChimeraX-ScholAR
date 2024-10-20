@@ -633,6 +633,27 @@ clean_local_desc = CmdDesc(
 )
 
 
+def remove_user(session, username: str):
+    """
+    ChimeraX command to remove a user from the Schol-AR directory structure. This command will remove the user's
+    directory and all associated projects and augmentations.
+
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    """
+
+    if ScARFileManager.remove_username(username):
+        session.logger.info(f"User {username} removed")
+        return
+    session.logger.warning(f"Can't remove user {username} because it was not found")
+
+
+remove_user_desc = CmdDesc(
+    required=[('username', StringArg)],
+    synopsis="Remove a user from the Schol-AR directory structure"
+)
+
+
 def username_exists(username: str):
     """
     Check if a username is mapped to a valid api token.
