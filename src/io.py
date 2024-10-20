@@ -83,7 +83,7 @@ class APIManager:
         url = 'https://www.Schol-AR.io/api/ListARP'
         headers = {'Authorization': f'Token {api_token}'}
         # We don't need to display errors. What goes wrong doesn't concern the user here.
-        response = APIManager.try_api_request(requests.get, url, headers=headers)
+        response = APIManager.try_api_request(requests.get, True, url, headers=headers)
         if response is None:
             return False
         else:
