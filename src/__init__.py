@@ -78,6 +78,9 @@ class _MyAPI(BundleAPI):
         elif ci.name == "scholar cleanLocal":
             func = cmd.clean_local
             desc = cmd.clean_local_desc
+        elif ci.name == "scholar removeUser":
+            func = cmd.remove_user
+            desc = cmd.remove_user_desc
         else:
             raise ValueError("trying to register unknown command: %s" % ci.name)
 

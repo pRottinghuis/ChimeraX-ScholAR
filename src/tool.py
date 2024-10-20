@@ -223,9 +223,24 @@ class ChimeraXScholARTool(ToolInstance):
 
         :param username: The username of the user.
         """
-        if ScARFileManager().get_user_token(username) is not None:
+
+        if APIManager.validate_api_token(ScARFileManager.get_user_token(username)):
             self.active_user = username
             self.select_project_page()
+        else:
+            # if the login was not successful and the user is in the list of users suggest to remove the user
+            if username in ScARFileManager.list_usernames():
+                reply = QMessageBox.question(
+                    self.tool_window.ui_area,
+                    'Schol-AR Invalid User API Token',
+                    f'The Schol-AR API token provided for the user {username} is invalid. Would you like to remove '
+                    f'the user?',
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.Yes
+                )
+
+                if reply == QMessageBox.Yes:
+                    run(self.session, f"scholar removeUser \"{username}\"")
 
     def select_existing_project(self):
         """

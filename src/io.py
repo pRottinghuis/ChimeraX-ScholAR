@@ -43,11 +43,12 @@ class APIManager:
     logger = None
 
     @staticmethod
-    def try_api_request(request_fn, *args, **kwargs) -> Optional[dict]:
+    def try_api_request(request_fn, expecting_error=False, *args, **kwargs) -> Optional[dict]:
         """
         Try to make an API request and return the response if successful. Print an error message if the request fails.
 
         :param request_fn: Function to make the API request. Must return a requests.Response object
+        :param expecting_error: T/F. Whether the request is expecting a possible failure response
         :param args: Positional arguments for the request function
         :param kwargs: Keyword arguments for the request function
         :return: JSON response from the API if the request is successful, None if the request fails
@@ -67,6 +68,8 @@ class APIManager:
                                        f"\n Error: \n{e}")
             else:
                 # The request was made but there is some other error
+                if expecting_error:
+                    return None
                 APIManager.logger.error(f"An error occurred while making the Schol-AR network call: \n{response.url}\n Error: \n{e}")
             return None
 
@@ -81,7 +84,7 @@ class APIManager:
         url = 'https://www.Schol-AR.io/api/ListARP'
         headers = {'Authorization': f'Token {api_token}'}
         # We don't need to display errors. What goes wrong doesn't concern the user here.
-        response = APIManager.try_api_request(requests.get, url, headers=headers)
+        response = APIManager.try_api_request(requests.get, True, url, headers=headers)
         if response is None:
             return False
         else:
@@ -97,7 +100,7 @@ class APIManager:
         """
         url = 'https://www.Schol-AR.io/api/ListARP'
         headers = {'Authorization': f'Token {api_token}'}
-        return APIManager.try_api_request(requests.get, url, headers=headers)
+        return APIManager.try_api_request(requests.get, False, url, headers=headers)
 
     @staticmethod
     def create_project(api_token: str, project_title: str, project_type: str, disc_url: str) -> Optional[dict]:
@@ -121,7 +124,7 @@ class APIManager:
             APIManager.PROJECT_TYPE_KEY: project_type,
             APIManager.PROJECT_DISC_URL_KEY: disc_url
         }
-        return APIManager.try_api_request(requests.post, url, headers=headers, json=data)
+        return APIManager.try_api_request(requests.post, False, url, headers=headers, json=data)
 
     @staticmethod
     def get_qr_data(token: str, qr_string: str) -> Optional[dict]:
@@ -134,7 +137,7 @@ class APIManager:
         """
         url = f'https://www.Schol-AR.io/api/GetQR/{qr_string}'
         headers = {'Authorization': f'Token {token}'}
-        return APIManager.try_api_request(requests.get, url, headers=headers)
+        return APIManager.try_api_request(requests.get, False, url, headers=headers)
 
     @staticmethod
     def list_augs(api_token: str, qr_string: str) -> Optional[dict]:
@@ -147,7 +150,7 @@ class APIManager:
         """
         url = f'https://www.Schol-AR.io/api/ListAug/{qr_string}'
         headers = {'Authorization': f'Token {api_token}'}
-        return APIManager.try_api_request(requests.get, url, headers=headers)
+        return APIManager.try_api_request(requests.get, False, url, headers=headers)
 
     @staticmethod
     def create_augmentation(
@@ -167,7 +170,7 @@ class APIManager:
             APIManager.AUGMENTATION_TITLE_KEY: augmentation_title,
             APIManager.AUGMENTATION_TYPE_KEY: augmentation_type,
         }
-        return APIManager.try_api_request(requests.post, url, headers=headers, json=data)
+        return APIManager.try_api_request(requests.post, False, url, headers=headers, json=data)
 
     @staticmethod
     def edit_augmentation(token: str, qrstring: str, aug_id: str, file_path: str,
@@ -193,7 +196,7 @@ class APIManager:
             files[APIManager.AUGMENTATION_TARGET_KEY] = open(file_path, 'rb')
         else:
             files[APIManager.AUGMENTATION_AUG_FILE_KEY] = open(file_path, 'rb')
-        return APIManager.try_api_request(requests.patch, url, headers=headers, files=files)
+        return APIManager.try_api_request(requests.patch, False, url, headers=headers, files=files)
 
     @staticmethod
     def download_file_from_url(url: str, save_dir: str):
@@ -356,6 +359,29 @@ class ScARFileManager:
         if users_info is None:
             return []
         return list(users_info.keys())
+
+    @classmethod
+    def remove_user(cls, username: str) -> bool:
+        """
+        Remove a username-api-token pairing from the user_info.json file and delete all user data.
+        :param username: Username to remove from the file
+        :return: True if the username was removed, False if the username doesn't exist
+        """
+
+        # This will inherently also make sure that the user_info file exists
+        if not cls.username_exists(username):
+            return False
+
+        # Delete the entire user directory if the user's API token is invalid
+        user_dir = os.path.join(cls.BASE_DIR, username)
+        shutil.rmtree(user_dir)
+
+        users_info = cls.get_users_info()
+        users_info.pop(username)
+
+        with open(cls.USERS_INFO_PATH, 'w') as file:
+            json.dump(users_info, file, indent=4)
+        return True
 
     @classmethod
     def init_scholar_dirs(cls):
@@ -936,6 +962,10 @@ class ScARFileManager:
         :param username: The username to clean the local files for.
         """
         if not cls.username_exists(username):
+            return
+
+        if not APIManager.validate_api_token(cls.get_user_token(username)):
+            APIManager.logger.warning(f"Found user: {username} with an invalid API token. Consider deleting the user.")
             return
 
         # Make sure that the user's projects are up-to-date
