@@ -48,6 +48,7 @@ class APIManager:
         Try to make an API request and return the response if successful. Print an error message if the request fails.
 
         :param request_fn: Function to make the API request. Must return a requests.Response object
+        :param expecting_error: T/F. Whether the request is expecting a possible failure response
         :param args: Positional arguments for the request function
         :param kwargs: Keyword arguments for the request function
         :return: JSON response from the API if the request is successful, None if the request fails
