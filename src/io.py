@@ -960,6 +960,12 @@ class ScARFileManager:
         if not cls.username_exists(username):
             return
 
+        if not APIManager.validate_api_token(cls.get_user_token(username)):
+            # Delete the entire user directory if the user's API token is invalid
+            user_dir = os.path.join(cls.BASE_DIR, username)
+            shutil.rmtree(user_dir)
+            return
+
         # Make sure that the user's projects are up-to-date
         cls.update_user_projects(username)
 
