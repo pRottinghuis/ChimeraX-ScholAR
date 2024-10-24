@@ -1,6 +1,30 @@
+<!--
+=== UCSF ChimeraX Copyright ===
+Copyright 2022 Regents of the University of California. All rights reserved.
+The ChimeraX application is provided pursuant to the ChimeraX license
+agreement, which covers academic and commercial uses. For more details, see
+<https://www.rbvi.ucsf.edu/chimerax/docs/licensing.html>
+
+You can also
+redistribute and/or modify it under the terms of the GNU Lesser General
+Public License version 2.1 as published by the Free Software Foundation.
+For more details, see
+<https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>
+
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. ADDITIONAL LIABILITY
+LIMITATIONS ARE DESCRIBED IN THE GNU LESSER GENERAL PUBLIC LICENSE
+VERSION 2.1
+
+This notice must be embedded in or attached to all copies, including partial
+copies, of the software or any revisions or derivations thereof.
+=== UCSF ChimeraX Copyright ===
+-->
+
 <BundleInfo name="ChimeraX-ScholAR"
-	    version="0.4.2" package="chimerax.scholar"
-  	    minSessionVersion="1" maxSessionVersion="1">
+	    version="1.0" package="chimerax.scholar"
+  	    minSessionVersion="1" maxSessionVersion="1" customInit="true">
 
   <Author>UCSF RBVI</Author>
   <Email>chimerax@cgl.ucsf.edu</Email>
@@ -8,10 +32,11 @@
 
   <!-- Synopsis is a one-line description
        Description is a full multi-line description -->
-  <Synopsis>Interface between ChimeraX and Schol-AR.</Synopsis>
-  <Description>Interface between ChimeraX and Schol-AR.
+  <Synopsis>Create augmented reality and web browser data augmentations for publication.</Synopsis>
+  <Description>Create, edit, and export your ChimeraX models to Schol-AR's augmented reality projects. User interface
+    and commands support project creation, augmentation creation, and augmentation editing capabilities.
 
-    Create and edit Schol-AR projects in ChimeraX.
+  Find the tool in the Tools menu under General -> ScholAR.
   </Description>
 
   <!-- Categories is a list where this bundle should appear -->
@@ -27,7 +52,7 @@
 
   <!-- Non-Python files that are part of package -->
   <DataFiles>
-    <DataFile>docs/user/tools/chimerax-scholar.html</DataFile>
+    <DataDir>docs</DataDir>
   </DataFiles>
 
   <ExtraFiles>
@@ -81,6 +106,9 @@
 
     <ChimeraXClassifier>ChimeraX :: Command :: scholar cleanLocal :: General ::
       Clean all local files that are associated with projects or augmentations that no longer exist on Schol-AR. </ChimeraXClassifier>
+
+    <ChimeraXClassifier>ChimeraX :: Command :: scholar removeUser :: General ::
+      Remove a user from the Schol-AR directory structure. </ChimeraXClassifier>
   </Classifiers>
 
 </BundleInfo>

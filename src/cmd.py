@@ -1,25 +1,54 @@
+# === UCSF ChimeraX Copyright ===
+# Copyright 2022 Regents of the University of California. All rights reserved.
+# The ChimeraX application is provided pursuant to the ChimeraX license
+# agreement, which covers academic and commercial uses. For more details, see
+# <https://www.rbvi.ucsf.edu/chimerax/docs/licensing.html>
+#
+# You can also
+# redistribute and/or modify it under the terms of the GNU Lesser General
+# Public License version 2.1 as published by the Free Software Foundation.
+# For more details, see
+# <https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>
+#
+# THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+# EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. ADDITIONAL LIABILITY
+# LIMITATIONS ARE DESCRIBED IN THE GNU LESSER GENERAL PUBLIC LICENSE
+# VERSION 2.1
+#
+# This notice must be embedded in or attached to all copies, including partial
+# copies, of the software or any revisions or derivations thereof.
+# === UCSF ChimeraX Copyright ===
+
+
+"""
+This module provides ChimeraX commands for managing user login, project selection, and augmentation within the
+Schol-AR application.
+"""
+
 import os.path
 import shutil
 from typing import Union
 
-from chimerax.core.commands import CmdDesc, StringArg, BoolArg, SaveFileNameArg, SaveFolderNameArg
+from chimerax.core.commands import CmdDesc, StringArg, BoolArg, SaveFileNameArg, SaveFolderNameArg, OpenFileNameArg
 from chimerax.core.commands import run
 
 from .io import ScARFileManager, APIManager
 
 
-# TODO make all commands run under this bundles commands not appear in the log by default
-
-def login(session, username: str, api_token: Union[str, None] = None):
+def login(session, username: str, api_token: Union[str, None] = None, **kwargs):
     """
-    ChimeraX command that is used to log in a Schol-AR chimerax user. If the user does not exist, the users name and
-    Schol-AR api token will be saved together into a save file that is used to keep track of all users. If the user
+    ChimeraX command that is used to log in a Schol-AR chimerax user. If the user does not exist, the user's name and
+    Schol-AR API token will be saved together into a save file that is used to keep track of all users. If the user
     already exists, this command will update the user's project info save file. Once the user is created in the dir
-    structure, network call the Schol-AR side for the users projects.
-    """
+    structure, network call the Schol-AR side for the user's projects.
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param api_token: The API token for the Schol-AR user. If None, the token will be retrieved from the save file.
+    """
     if not valid_input_string(username):
-        session.logger.info("Invalid username. Usernames can only contain letters, numbers, and spaces.")
+        session.logger.warning("Invalid username. Usernames can only contain letters, numbers, and spaces.")
         return
 
     ScARFileManager.init_scholar_dirs()
@@ -29,21 +58,23 @@ def login(session, username: str, api_token: Union[str, None] = None):
         retrieved_token = ScARFileManager.get_user_token(username)
         if retrieved_token is None:
             # if the user did not exist in the info file
-            session.logger.info(f"User {username} does not exist")
+            session.logger.warning(f"User {username} does not exist")
             return
         user_token = retrieved_token
 
     if not APIManager.validate_api_token(user_token):
         # exit on invalid api token
-        session.logger.info(f"Invalid API token: {user_token}")
+        session.logger.warning(f"Invalid API token for: {username}")
         return
 
     ScARFileManager.update_users_info(username, user_token)
 
     ScARFileManager.update_user_projects(username)
+    session.logger.info("Succesfully logged into Schol-AR as: " + username)
 
 
 login_desc = CmdDesc(
+    self_logging=True,
     required=[('username', StringArg)],
     optional=[('api_token', StringArg)],
     synopsis="Store Username and API Token for Schol-AR"
@@ -53,20 +84,25 @@ login_desc = CmdDesc(
 def project(session, username: str, project_title: str, project_type: str = "other", disc_url: str = ""):
     """
     ChimeraX command that is used to set up the directory structure and augmentation info save file for a project. If
-    the project already exists, it's augmentation save file will be updated, otherwise a new project will be created on
-    Schol-AR and then the directory struct and augmentation save file will be generated.
-    """
+    the project already exists, its augmentation save file will be updated, otherwise a new project will be created on
+    Schol-AR and then the directory structure and augmentation save file will be generated.
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param project_type: The type of the project. Default is "other".
+    :param disc_url: The URL for the project description. Default is an empty string.
+    """
     if not username_exists(username):
         return
 
     if not valid_input_string(project_title):
-        session.logger.info("Invalid project title. Project titles can only contain letters, numbers, and spaces.")
+        session.logger.warning("Invalid project title. Project titles can only contain letters, numbers, and spaces.")
         return
 
     if project_type not in APIManager.PROJECT_TYPES.values():
         project_types = ", ".join(APIManager.PROJECT_TYPES.values())
-        session.logger.info(f"Invalid project type. Project type must be one of: {project_types}")
+        session.logger.warning(f"Invalid project type. Project type must be one of: {project_types}")
         return
 
     # set target project if param project_title exists in the user's project list. None means it does not exist
@@ -79,7 +115,7 @@ def project(session, username: str, project_title: str, project_type: str = "oth
         project_response = APIManager.create_project(token, project_title, project_type, disc_url)
         if project_response is None:
             # this will happen if there is a network call error
-            session.logger.info(f"Failed to create project: {project_title} on scholar server")
+            session.logger.warning(f"Failed to create project: {project_title} on scholar server")
             return
 
         # create the project locally
@@ -90,7 +126,7 @@ def project(session, username: str, project_title: str, project_type: str = "oth
 
         # if the target_project is still none that means that there was an error creating the project locally
         if target_project is None:
-            session.logger.info(f"Failed to create project locally {project_title}")
+            session.logger.error(f"Failed to create project locally {project_title}")
             return
 
     # Once we get to here we know that the project exists in the user's project list and qr dirs
@@ -108,9 +144,12 @@ project_desc = CmdDesc(
 
 def download_qr(session, username: str, project_title: str):
     """
-    ChimeraX command to download the qr codes for a project.
-    """
+    ChimeraX command to download the QR code .png files for a project.
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    """
     if not usr_project_exists(username, project_title):
         return
 
@@ -119,7 +158,7 @@ def download_qr(session, username: str, project_title: str):
     qr_data = APIManager.get_qr_data(token, qrstring)
 
     if qr_data is None:
-        session.logger.info(f"Failed to download project files for project {project_title}")
+        session.logger.warning(f"Failed to download project files for project {project_title}")
         return
 
     pub_save_dir = ScARFileManager.pub_qr_dir(username, project_title)
@@ -143,24 +182,30 @@ download_qr_desc = CmdDesc(
 def augmentation(session, username: str, project_title: str, augmentation_title: str, augmentation_type: str = 'model',
                  verbose: bool = False):
     """
-    ChimeraX command that is used to prepare an augmentation to be able to download associated files. This
-    Command can be used to select an existing augmentation from Schol-AR remote data to set up the local directory
-    structure, or it can be used to make a new augmentation. If a new augmentation is created the project info save file
-    will be updated to reflect the new augmentation. The new projcet made on the scholar end will initially be blank.
-    Immediately after creating a new augmentation, the target image and augmented file will be uploaded to the Schol-AR
-    server that reflect whatever the current session is set to.
-    """
+    ChimeraX command that is used to prepare an augmentation to be able to download associated files. This command
+    can be used to select an existing augmentation from Schol-AR remote data to set up the local directory structure,
+    or it can be used to make a new augmentation. If a new augmentation is created on Schol-AR, the project info save
+    file will be updated to reflect the new augmentation. The new augmentation made on the Schol-AR end will
+    initially be blank. Immediately after creating a new augmentation, the target image and augmented file will be
+    uploaded to the Schol-AR server that reflect whatever the current session is set to.
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param augmentation_type: The type of the augmentation. Default is 'model'. Only supported type is 'model'.
+    :param verbose: If True, the command will log additional information. Default is False.
+    """
     if not usr_project_exists(username, project_title):
         return
 
     if not valid_input_string(augmentation_title):
-        session.logger.info("Invalid augmentation title. Augmentation titles can contain only letters, numbers, and "
-                            "spaces.")
+        session.logger.warning("Invalid augmentation title. Augmentation titles can contain only letters, numbers, and "
+                               "spaces.")
         return
 
     if augmentation_type != "model":
-        session.logger.info("Invalid augmentation type. Only supported augmentation type is 'model'.")
+        session.logger.warning("Invalid augmentation type. Only supported augmentation type is 'model'.")
         return
 
     # check if the aug needs to be created or if it exists in the project info save file
@@ -171,6 +216,17 @@ def augmentation(session, username: str, project_title: str, augmentation_title:
         token = ScARFileManager.get_user_token(username)
         qrstring = ScARFileManager.get_project_qrstring(username, project_title)
 
+        # check if the model and target image files are too large before creating the augmentation
+        if not ScARFileManager.save_and_size_check(session, '.glb'):
+            session.logger.warning(f"Model file must be smaller than {APIManager.MAX_FILE_SIZE_MB}MB. "
+                                   f"Reduce model detail and try again.")
+            session.logger.warning("Could not create new augmentation.")
+            return
+        if not ScARFileManager.save_and_size_check(session, '.png'):
+            session.logger.warning(f"Target Image file must be smaller than {APIManager.MAX_FILE_SIZE_MB}MB.")
+            session.logger.warning("Could not create new augmentation.")
+            return
+
         # The augmentation needs to be created on Schol-AR side.
         create_aug_response = APIManager.create_augmentation(
             token, qrstring, augmentation_title, augmentation_type
@@ -178,7 +234,7 @@ def augmentation(session, username: str, project_title: str, augmentation_title:
 
         # Check to see if anything went wrong with the network post
         if create_aug_response is None:
-            session.logger.info(f"Failed to create augmentation {augmentation_title} for project {project_title}")
+            session.logger.warning(f"Failed to create augmentation {augmentation_title} for project {project_title}")
             return
 
         # update the project save file once we know the augmentation was created
@@ -217,9 +273,15 @@ def download_aug_files(
         target_image: bool = True, augmented_file: bool = False):
     """
     ChimeraX command to sync selected files for an augmentation to the local directory structure. This command is
-    used to download the augmentation files into the setup directory structure.
-    """
+    used to download the augmentation files into the Schol-AR directory structure.
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param target_image: If True, the target image will be downloaded. Default is True.
+    :param augmented_file: If True, the augmented file will be downloaded. Default is False.
+    """
     if not usr_proj_aug_exists(username, project_title, augmentation_title):
         return
 
@@ -228,7 +290,7 @@ def download_aug_files(
 
         # check if the target image exists
         if target_image_url is None:
-            session.logger.info(f"Can't sync because Target Image for: {augmentation_title} not found")
+            session.logger.warning(f"Can't sync because Target Image for: {augmentation_title} not found")
         else:
             # only keep the 1 file that is being used
             target_dir = ScARFileManager.aug_target_dir(username, project_title, augmentation_title)
@@ -241,7 +303,7 @@ def download_aug_files(
         augmented_url = ScARFileManager.get_augmentation_model_url(username, project_title, augmentation_title)
         # check if the augmented file exists
         if augmented_url is None:
-            session.logger.info(f"Can't sync because Augmented File for: {augmentation_title} not found")
+            session.logger.warning(f"Can't sync because Augmented File for: {augmentation_title} not found")
         else:
             # only keep the 1 file that is being used in the directory
             model_dir = ScARFileManager.aug_model_dir(username, project_title, augmentation_title)
@@ -267,8 +329,15 @@ def upload_aug_files(session, username: str, project_title: str, augmentation_ti
     """
     ChimeraX command to sync local files to the remote directory structure. This command is used to upload the
     selected augmentation files into the Schol-AR directory structure.
-    """
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param target_image: If True, the target image will be uploaded. Default is False.
+    :param augmented_file: If True, the augmented file will be uploaded. Default is True.
+    :param verbose: If True, the command will log additional information. Default is False.
+    """
     if not usr_proj_aug_exists(username, project_title, augmentation_title):
         return
 
@@ -304,9 +373,16 @@ upload_aug_files_desc = CmdDesc(
 def aug_save_and_update(session, token: str, username: str, project_title: str, augmentation_title: str,
                         file_path: str, target_update: bool, verbose: bool = False):
     """
-    Save and update scholar with one file
-    :param file_path: the path to the file that will be saved. Contains file type extension for the save command.
-    :param target_update: if true update the target image, if false update the augmented file
+    Save and update Schol-AR with one file.
+
+    :param session: The current ChimeraX session.
+    :param token: The API token for the Schol-AR user.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param file_path: The path to the file that will be saved. Contains file type extension for the save command.
+    :param target_update: If True, update the target image. If False, update the augmented file.
+    :param verbose: If True, the command will log additional information. Default is False.
     """
     qrstring = ScARFileManager.get_project_qrstring(username, project_title)
     aug_id = ScARFileManager.get_augmentation_id(username, project_title, augmentation_title)
@@ -318,7 +394,9 @@ def aug_save_and_update(session, token: str, username: str, project_title: str, 
     )
     # something on the server failed check
     if updated_aug_info is None:
-        session.logger.info(f"Failed to update augmentation {augmentation_title} for project {project_title}")
+        field_target = "target image" if target_update else "augmented file"
+        session.logger.warning(f"Failed to upload augmentation {field_target} for {augmentation_title} in project "
+                               f"{project_title}")
         return
     # make sure that the save files for the project are updated
     ScARFileManager.update_augs_info(username, project_title)
@@ -329,9 +407,14 @@ def save_aug_session(session, username: str, project_title: str, augmentation_ti
     """
     ChimeraX command to save a .cxs session file to the augmentation's directory. The session file will be saved/copied
     into the augmentation's directory.
-    :param file_path: Path to a target .cxs file to save. If None or doesn't exist, the current session will be saved.
-    """
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param file_path: Path to a target .cxs file to save. If None or doesn't exist, the current session will be saved.
+    :param verbose: If True, the command will log additional information. Default is False.
+    """
     if not usr_proj_aug_exists(username, project_title, augmentation_title):
         return
 
@@ -353,7 +436,7 @@ save_aug_session_desc = CmdDesc(
     required=[('username', StringArg),
               ('project_title', StringArg),
               ('augmentation_title', StringArg)],
-    keyword=[('file_path', StringArg),
+    keyword=[('file_path', OpenFileNameArg),
              ('verbose', BoolArg)],
     synopsis="Save a session file to the augmentation"
 )
@@ -364,15 +447,20 @@ def open_aug_session(session, username: str, project_title: str, augmentation_ti
     ChimeraX command to open a .cxs session file from the augmentation's directory. Assumes that there is only
     one session file stored at a time per augmentation. If there are multiple session files, the first listed one will
     be opened.
-    """
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param verbose: If True, the command will log additional information. Default is False.
+    """
     if not usr_proj_aug_exists(username, project_title, augmentation_title):
         return
 
     aug_session_dir = ScARFileManager.aug_session_dir(username, project_title, augmentation_title)
     session_file_name = ScARFileManager.get_first_file(aug_session_dir)
     if session_file_name is None:
-        session.logger.info(f"No session file found for Augmentation: {augmentation_title}")
+        session.logger.info(f"No session file yet for Augmentation: {augmentation_title}")
         return
 
     open_session_path = os.path.join(aug_session_dir, session_file_name)
@@ -392,8 +480,14 @@ def store_target_image(session, username: str, project_title: str, augmentation_
                        verbose: bool = False):
     """
     ChimeraX command to save the target image to a location outside the Schol-AR directory structure.
-    """
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param save_location: The location to save the target image.
+    :param verbose: If True, the command will log additional information. Default is False.
+    """
     if not usr_proj_aug_exists(username, project_title, augmentation_title):
         return
 
@@ -424,8 +518,14 @@ def store_model(session, username: str, project_title: str, augmentation_title: 
                 verbose: bool = False):
     """
     ChimeraX command to save the augmented model to a location outside the Schol-AR directory structure.
-    """
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param save_location: The location to save the augmented model.
+    :param verbose: If True, the command will log additional information. Default is False.
+    """
     if not usr_proj_aug_exists(username, project_title, augmentation_title):
         return
 
@@ -453,10 +553,16 @@ store_model_desc = CmdDesc(
 def store_all_aug_files(session, username: str, project_title: str, augmentation_title: str, save_folder: str,
                         verbose: bool = False):
     """
-    ChimeraX command to save all the augmentation files and qr code to a location outside the Schol-AR directory
+    ChimeraX command to save all the augmentation files and QR code to a location outside the Schol-AR directory
     structure.
-    """
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation.
+    :param save_folder: The folder to save all the augmentation files.
+    :param verbose: If True, the command will log additional information. Default is False.
+    """
     if not usr_proj_aug_exists(username, project_title, augmentation_title):
         return
     os.makedirs(save_folder, exist_ok=True)
@@ -485,9 +591,13 @@ store_all_aug_files_desc = CmdDesc(
 def store_qr_image(session, username: str, project_title: str, save_location: str, verbose: bool = False):
     """
     ChimeraX command to save the public QR code image to a location outside the Schol-AR directory structure.
-    :param save_location: File name for the qr image save. Will be formatted into a .png file.
-    """
 
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param save_location: The location to save the QR code image.
+    :param verbose: If True, the command will log additional information. Default is False.
+    """
     if not usr_project_exists(username, project_title):
         return
 
@@ -513,31 +623,71 @@ store_qr_image_desc = CmdDesc(
 def format_file_extension(file_path: str, file_extension):
     """
     Ensure that a file path has the desired file extension. The extension must be a valid extension with a period.
+
+    :param file_path: The path to the file.
+    :param file_extension: The desired file extension, including the period (e.g., ".png").
+    :return: The file path with the desired extension.
     """
     if not file_path.endswith(file_extension):
         return file_path + file_extension
     return file_path
 
 
-def clean_local(session, username: str):
+def clean_local(session, username: str = None):
     """
     ChimeraX command to clean all the local files that are associated with projects or augmentations that no longer
-    exist on Schol-AR relmote.
-    """
+    exist on Schol-AR remote. A username can be specified to target which user the files are deleted for. If no username
+    is specified, all users' files will be cleaned.
 
-    if not username_exists(username):
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    """
+    target_usernames = [username]
+
+    if username is None:
+        target_usernames = ScARFileManager.list_usernames()
+    elif not username_exists(username):
+        session.logger.warning(f"Cannot Clean Local. User {username} not found")
         return
 
-    ScARFileManager.clean_local(username)
+    for username in target_usernames:
+        ScARFileManager.clean_local(username)
 
 
 clean_local_desc = CmdDesc(
-    required=[('username', StringArg)],
+    optional=[('username', StringArg)],
     synopsis="Clean all local files that are associated with projects or augmentations that no longer exist on Schol-AR"
 )
 
 
+def remove_user(session, username: str):
+    """
+    ChimeraX command to remove a user from the Schol-AR directory structure. This command will remove the user's
+    directory and all associated projects and augmentations.
+
+    :param session: The current ChimeraX session.
+    :param username: The username of the Schol-AR user.
+    """
+
+    if ScARFileManager.remove_user(username):
+        session.logger.info(f"User {username} removed")
+        return
+    session.logger.warning(f"Can't remove user {username} because it was not found")
+
+
+remove_user_desc = CmdDesc(
+    required=[('username', StringArg)],
+    synopsis="Remove a user from the Schol-AR directory structure"
+)
+
+
 def username_exists(username: str):
+    """
+    Check if a username is mapped to a valid api token.
+
+    :param username: The username to check.
+    :return: True if the username exists, False otherwise.
+    """
     # make sure the user exists
     if not ScARFileManager.username_exists(username):
         print(f"User {username} not found")
@@ -546,6 +696,13 @@ def username_exists(username: str):
 
 
 def usr_project_exists(username: str, project_title: str):
+    """
+    Check if a project exists for a given user.
+
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project to check.
+    :return: True if the project exists, False otherwise.
+    """
     # make sure the user and project exist
     if not username_exists(username):
         return False
@@ -556,6 +713,14 @@ def usr_project_exists(username: str, project_title: str):
 
 
 def usr_proj_aug_exists(username: str, project_title: str, augmentation_title: str):
+    """
+    Check if an augmentation exists for a given project and user.
+
+    :param username: The username of the Schol-AR user.
+    :param project_title: The title of the project.
+    :param augmentation_title: The title of the augmentation to check.
+    :return: True if the augmentation exists, False otherwise.
+    """
     # make sure the user, project, and augmentation exist
     if not usr_project_exists(username, project_title):
         return False
@@ -567,7 +732,10 @@ def usr_proj_aug_exists(username: str, project_title: str, augmentation_title: s
 
 def valid_input_string(input_string: str):
     """
-    All user inputted strings need to only contain letters, numbers, and spaces. In addition, they cannot be empty.
+    Validate that an input string contains only letters, numbers, and spaces, and is not empty.
+
+    :param input_string: The string to validate.
+    :return: True if the string is valid, False otherwise.
     """
     if input_string is None or input_string == "":
         return False

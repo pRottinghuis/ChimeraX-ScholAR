@@ -1,0 +1,259 @@
+<html><!--
+=== UCSF ChimeraX Copyright ===
+Copyright 2022 Regents of the University of California. All rights
+reserved.
+The ChimeraX application is provided pursuant to the ChimeraX license
+agreement, which covers academic and commercial uses. For more
+details, see
+<https://www.rbvi.ucsf.edu/chimerax/docs/licensing.html>
+
+You can also
+redistribute and/or modify it under the terms of the GNU Lesser General
+Public License version 2.1 as published by the Free Software Foundation.
+For more details, see
+<https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>
+
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. ADDITIONAL
+LIABILITY
+LIMITATIONS ARE DESCRIBED IN THE GNU LESSER GENERAL PUBLIC LICENSE
+VERSION 2.1
+
+This notice must be embedded in or attached to all copies, including
+partial
+copies, of the software or any revisions or derivations thereof.
+=== UCSF ChimeraX Copyright ===
+
+--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="./tool-scholar_files/userdocs.css">
+<title>Tool: ScholAR</title>
+<style>@media (prefers-color-scheme: dark) { :root { color-scheme: dark; } }</style>
+</head><body>
+
+<a name="top"></a>
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/index.html">
+<img width="60px" src="./tool-scholar_files/ChimeraX-docs-icon.svg" alt="ChimeraX docs icon" class="clRighticon" title="User Guide Index"></a>
+
+<h3><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/index.html#tools">Tool</a>: ScholAR</h3>
+<p>
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR</a>
+is a website and associated software that allows users to create
+augmented reality overlays for their publication images.
+Users can create a Schol-AR account free of charge and 
+upload 3D models from ChimeraX, which can then be linked to figures 
+in a publication for viewing the associated 3D augmentations
+with a smartphone or web-based PDF viewer. Schol-AR is described in:
+</p>
+<blockquote>
+<a href="https://www.nature.com/articles/s41597-022-01426-y" target="_blank">
+Integrating data directly into publications with augmented reality and 
+web-based technologies – Schol-AR.</a>
+Ard T, Bienkowski MS, Liew S, Sepehrband F, Yan L, Toga AW.
+<i>Sci Data</i> <b>9</b>(1):298 (2022).
+</blockquote>
+<p>
+See also:
+<a href="https://www.youtube.com/@schol-ar7559%20target=" _blank"="">Schol-AR
+YouTube videos</a>
+</p><p>
+The ChimeraX <b>ScholAR</b> tool interfaces with the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+to allow:
+</p>
+<ul>
+<li>creating a user account
+</li><li>for a user, creating one or more <b><i>projects</i></b>,
+each corresponding to a single publication, poster, or presentation
+</li><li>within a project, creating one or more <b><i>augmentations</i></b>,
+each consisting of a 3D model to show in augmented reality and the
+corresponding target image that appears in the project 
+(<i>e.g.</i>, a figure in the paper)
+</li><li>generating <a name="qr">QR codes</a> for each project:
+  <ul>
+  <li>a permanent, public QR code that should be included in the 
+  publication, poster, or presentation
+  so that viewers can access the associated Schol-AR augmentations
+  </li><li>a private QR code that acts like a password to edit the project;
+  it should be kept private and is not guaranteed to be permanent
+  </li></ul>
+</li></ul>
+<p>
+Deleting an augmentation or project (if desired) should be done at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>.
+After that happens, the local copies of the associated files can be removed
+by choosing <b>Clean Project Files</b> from the 
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/window.html#context-menu">context menu</a> of the
+<b>ScholAR</b> tool.
+</p><p>
+The <b>ScholAR</b> tool is also implemented as the
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html"><b>scholar</b></a> command.
+See also: 
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html"><b>save</b></a>
+</p>
+
+<blockquote>
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#login"><b>Schol-AR Login</b></a>
+<br><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#projects"><b>Project Specification</b></a>
+<br><a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#augmentations"><b>Augmentations</b></a>
+</blockquote>
+
+<a name="login"></a>
+<p class="nav">
+[<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#top">back to top: ScholAR</a>]
+</p>
+<h3>Schol-AR Login</h3>
+<p>
+The <b>ScholAR</b> tool can be opened from the <b>General</b>
+section of the <b>Tools</b> menu and manipulated like other panels
+(<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/window.html#panels">more...</a>).
+The initial panel is for logging in to Schol-AR.
+</p><p>
+<a name="account"></a>
+Users who do not yet have a Schol-AR account should first go to the 
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>,
+register for an account, log in to the account, go the Profile settings,
+and then click “Get API Token.”
+The username, password, and API token should be noted down
+for future access to the account.
+</p>
+<ul>
+<li>Users who have already logged in to Schol-AR on the current device
+can simply choose their existing <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#localname">local username</a>
+from the drop-down menu, then click <b>Select Existing User</b>.
+<p>
+</p></li><li>Users who have not yet logged in to Schol-AR on this device should 
+<b>Create New User</b> by entering the following and clicking <b>Submit</b>:
+<br><br>
+  <a name="localname"></a>
+  <ul>
+  <li><b>Username</b> – a <b><i>local username</i></b>
+to be used by ChimeraX as a convenient alias to the API token;
+this does not need to be the same as the username at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+<table cellpadding="10px">
+<tbody><tr><td class="shaded">
+The local username and any other strings input to this tool 
+must not contain any characters other than letters, numbers, and spaces.
+</td></tr>
+</tbody></table>
+  </li><li><b>API Token</b> – the API token obtained from the 
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+as described <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#account">above</a>
+  </li></ul>
+</li></ul>
+<p>
+A successful login switches the panel to the
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#projects">projects</a> section.
+</p>
+
+<a name="projects"></a>
+<p class="nav">
+[<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#top">back to top: ScholAR</a>]
+</p>
+<h3>Project Specification</h3>
+<p>
+An existing project (if any) can be specified by choosing its title from
+the dropdown menu and clicking <b>Select</b>.
+</p><p>
+Alternatively, a new project can be specified by entering a title <i>etc.</i>
+and clicking <b>Create</b>:
+</p>
+<ul>
+<li><b>Project Title</b> (*required)
+</li><li><b>Project Type</b> (*required), with choices:
+  <ul>
+  <li><b>Scientific Paper</b>
+  </li><li><b>Poster or Other Presentation</b>
+  </li><li><b>Book or Chapter</b>
+  </li><li><b>Other</b>
+  </li></ul>
+</li><li><b>Project URL</b> (optional)
+– link to publication or institute
+</li></ul>
+<p>
+Specifying a project switches the panel to the
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#augmentations">augmentations</a> section.
+Other buttons:
+</p>
+<ul>
+<li><b>View at Schol-AR.io</b> – go to the user account at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+</li><li><b>New Login</b> – return to <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#login">login</a>
+</li></ul>
+
+<a name="augmentations"></a>
+<p class="nav">
+[<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#top">back to top: ScholAR</a>]
+</p>
+<h3>Augmentations</h3>
+<p>
+A new augmentation (a 3D model in GLB format)
+can be created from the current contents of the ChimeraX scene
+by giving it a name and clicking <b>Create New</b>.
+A current limitation is that the GLB file size cannot exceed 30MB.
+Alternatively,
+an existing augmentation (if any) to modify can be specified by choosing
+its name from the dropdown menu and clicking <b>Select</b>.
+</p><p>
+Specifying an augmentation shows its target image and additional buttons for
+for modifying the augmentation:
+</p>
+<ul>
+<li><b>Update Target Image</b>
+– update the target image in the thumbnail and at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+<br><br>
+<table cellpadding="10px"><tbody><tr>
+<td class="shaded">
+The target image must match that in the media seen by the viewers
+(<i>e.g.</i>, the corresponding publication figure), so it is 
+very important not to accidentally update/overwrite it
+when the appearance in ChimeraX is different.
+There is no way to recover the previous target image with the ChimeraX
+<b>ScholAR</b> tool, <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/scholar.html"><b>scholar</b></a>
+command, or at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>.
+If the target image no longer matches the published image,
+others will no longer be able to view the associated augmentation.
+</td></tr></tbody></table>
+<br>
+</li><li><b>Update Model</b>
+– update the 3D model at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>;
+a current limitation is that the file size cannot exceed 30MB
+</li><li><b>Preview</b>
+– open a separate window displaying a larger version of the target 
+image and the two <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#qr">QR codes</a> for the project, to allow
+previewing the augmentation with a mobile device
+</li><li><b>Save Files Locally</b>
+– open a file browser to save the augmentation target image, 
+augmentation 3D model file, and the public <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#qr">QR code</a>
+for the project
+</li><li><b>Save and Close</b>
+– save a <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/save.html#session">ChimeraX session</a> 
+and <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/commands/close.html">close</a> the current session 
+(this also occurs whenever the user navigates to a different section of
+the dialog, such as by using the buttons below)
+</li></ul>
+<p>
+Other buttons:
+</p>
+<ul>
+<li><b>View at Schol-AR.io</b> – go to the user account at the
+<a href="https://www.schol-ar.io/" target="_blank">Schol-AR website</a>
+</li><li><b>New Login</b> – return to <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#login">login</a>
+</li><li><b>Projects</b> 
+‐ return to <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#projects">projects</a>
+</li><li><b>Augmentations</b> 
+– return to <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#augmentations">choosing an augmentation</a>
+</li><li><b>Store QR</b> – open a file browser to save the public 
+<a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/tools/scholar.html#qr">QR code</a> for the project
+</li></ul>
+
+<hr>
+<address>UCSF Resource for Biocomputing, Visualization, and Informatics / 
+October 2024</address>
+
+</body></html>
