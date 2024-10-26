@@ -70,7 +70,7 @@ def login(session, username: str, api_token: Union[str, None] = None, **kwargs):
     ScARFileManager.update_users_info(username, user_token)
 
     ScARFileManager.update_user_projects(username)
-    session.logger.info("Succesfully logged into Schol-AR as: " + username)
+    session.logger.status("Succesfully logged into Schol-AR as: " + username)
 
 
 login_desc = CmdDesc(
