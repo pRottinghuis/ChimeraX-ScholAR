@@ -41,7 +41,7 @@ from Qt.QtGui import QPixmap, QDesktopServices
 from Qt.QtWidgets import (QFrame, QVBoxLayout, QWidget, QComboBox, QFormLayout, QLabel, QLineEdit,
                           QPushButton, QHBoxLayout, QStackedLayout, QSizePolicy)
 
-from .io import APIManager
+from .api_manager import PROJECT_TYPES
 
 
 class ScholarAugPreviewWidget(QWidget):
@@ -463,7 +463,7 @@ class ScholarProjectWidget(QWidget):
 
         self.project_type_label = QLabel("Project Type*:")
         self.project_type_combobox = QComboBox()
-        for project_type in APIManager.PROJECT_TYPES.keys():
+        for project_type in PROJECT_TYPES.keys():
             self.project_type_combobox.addItem(project_type)
 
         self.project_url_label = QLabel("Project URL:")

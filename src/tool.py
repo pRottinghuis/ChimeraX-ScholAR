@@ -37,7 +37,7 @@ from chimerax.core.tools import ToolInstance
 from chimerax.ui import MainToolWindow
 from chimerax.ui.open_save import SaveDialog
 
-from .io import ScARFileManager, APIManager
+from . import sc_file_manager, api_manager
 from .scholar_ui import ScholarMainLayout, ScholarLoginWidget, ScholarProjectWidget, ScholarSelAugWidget, \
     ScholarAugEditWidget, ScholarAugPreviewWidget
 
@@ -124,7 +124,7 @@ class ChimeraXScholARTool(ToolInstance):
         """
         Sets up and displays the login page.
         """
-        existing_users = ScARFileManager.list_usernames()
+        existing_users = sc_file_manager.list_usernames()
 
         self.main_layout.get_login_widget().refresh_iu()
         self.main_layout.get_login_widget().set_login_combobox(existing_users)
@@ -143,7 +143,7 @@ class ChimeraXScholARTool(ToolInstance):
         """
         self.main_layout.get_project_widget().refresh_ui()
 
-        project_titles = ScARFileManager.list_projects(self.active_user)
+        project_titles = sc_file_manager.list_projects(self.active_user)
         self.main_layout.get_project_widget().set_existing_projects(project_titles)
         self.main_layout.set_active_widget(ScholarMainLayout.PROJECT_SELECT)
 
@@ -156,7 +156,7 @@ class ChimeraXScholARTool(ToolInstance):
         """
         self.main_layout.get_aug_sel_widget().refresh_ui()
         self.main_layout.get_aug_sel_widget().set_project_title(self.active_project)
-        augmentation_titles = ScARFileManager.list_existing_aug_titles(self.active_user, self.active_project)
+        augmentation_titles = sc_file_manager.list_existing_aug_titles(self.active_user, self.active_project)
         self.main_layout.get_aug_sel_widget().set_existing_augmentations(augmentation_titles)
         self.main_layout.set_active_widget(ScholarMainLayout.AUGMENTATION_SELECT)
 
@@ -170,13 +170,13 @@ class ChimeraXScholARTool(ToolInstance):
         aug_edit_widget.set_augmentation_title(self.active_augmentation)
 
         # Check if the target image exists locally. If not download it. Then set it to the widget for display.
-        image_file_path = ScARFileManager.get_augmentation_target_image_path(
+        image_file_path = sc_file_manager.get_augmentation_target_image_path(
             self.active_user, self.active_project, self.active_augmentation)
         if image_file_path is None:
             run(self.session, f"scholar downloadAugFiles \"{self.active_user}\" \"{self.active_project}\" "
                               f"\"{self.active_augmentation}\" targetImage True augmentedFile False",
                 log=False)
-            image_file_path = ScARFileManager.get_augmentation_target_image_path(
+            image_file_path = sc_file_manager.get_augmentation_target_image_path(
                 self.active_user, self.active_project, self.active_augmentation)
 
         self.main_layout.get_augmentation_edit_widget().update_target_image_display(image_file_path)
@@ -247,12 +247,12 @@ class ChimeraXScholARTool(ToolInstance):
         :param username: The username of the user.
         """
 
-        if APIManager.validate_api_token(ScARFileManager.get_user_token(username)):
+        if api_manager.validate_api_token(sc_file_manager.get_user_token(username)):
             self.active_user = username
             self.select_project_page()
         else:
             # if the login was not successful and the user is in the list of users suggest to remove the user
-            if username in ScARFileManager.list_usernames():
+            if username in sc_file_manager.list_usernames():
                 reply = QMessageBox.question(
                     self.tool_window.ui_area,
                     'Schol-AR Invalid User API Token',
@@ -289,12 +289,12 @@ class ChimeraXScholARTool(ToolInstance):
         if project_title == "":
             return
 
-        project_type = APIManager.PROJECT_TYPES[unformatted_project_type]
+        project_type = api_manager.PROJECT_TYPES[unformatted_project_type]
 
         run(self.session,
             f"scholar project \"{self.active_user}\" \"{project_title}\" projectType \"{project_type}\" discUrl \"{project_url}\"")
 
-        if ScARFileManager.get_project(self.active_user, project_title) is not None:
+        if sc_file_manager.get_project(self.active_user, project_title) is not None:
             self.active_project = project_title
             self.select_augmentation_page()
 
@@ -320,12 +320,12 @@ class ChimeraXScholARTool(ToolInstance):
         run(self.session,
             f"scholar augmentation \"{self.active_user}\" \"{self.active_project}\" \"{augmentation_title}\"")
         # Check if somehow the augmentation was not created or set
-        if ScARFileManager.get_augmentation(self.active_user, self.active_project, augmentation_title) is None:
+        if sc_file_manager.get_augmentation(self.active_user, self.active_project, augmentation_title) is None:
             return
         # save the active augmentation and open the session if it exists
         self.active_augmentation = augmentation_title
         # If there is no session saved yet save the current session to the augmentation.
-        if not ScARFileManager.has_session_file(self.active_user, self.active_project, self.active_augmentation):
+        if not sc_file_manager.has_session_file(self.active_user, self.active_project, self.active_augmentation):
             run(self.session,
                 f"scholar saveAugSession \"{self.active_user}\" \"{self.active_project}\" "
                 f"\"{self.active_augmentation}\"", log=False)
@@ -377,7 +377,7 @@ class ChimeraXScholARTool(ToolInstance):
 
         self.update_aug_files(target_image=True, augmented_file=False)
 
-        image_path = ScARFileManager.get_augmentation_target_image_path(
+        image_path = sc_file_manager.get_augmentation_target_image_path(
             self.active_user, self.active_project, self.active_augmentation)
         self.main_layout.get_augmentation_edit_widget().update_target_image_display(image_path)
 
@@ -390,7 +390,7 @@ class ChimeraXScholARTool(ToolInstance):
             return
 
         # Get the file path to the preview image
-        target_image_path = ScARFileManager.get_augmentation_target_image_path(
+        target_image_path = sc_file_manager.get_augmentation_target_image_path(
             self.active_user, self.active_project, self.active_augmentation
         )
 
@@ -399,12 +399,12 @@ class ChimeraXScholARTool(ToolInstance):
             return
 
         # Get the qr image path. If it doesn't exist try downloading it.
-        pub_qr_image_path = ScARFileManager.get_qr_file(self.active_user, self.active_project, admin=False)
-        admin_qr_image_path = ScARFileManager.get_qr_file(self.active_user, self.active_project, admin=True)
+        pub_qr_image_path = sc_file_manager.get_qr_file(self.active_user, self.active_project, admin=False)
+        admin_qr_image_path = sc_file_manager.get_qr_file(self.active_user, self.active_project, admin=True)
         if pub_qr_image_path is None:
             run(self.session, f"scholar downloadQR \"{self.active_user}\" \"{self.active_project}\"")
-            pub_qr_image_path = ScARFileManager.get_qr_file(self.active_user, self.active_project, admin=False)
-            admin_qr_image_path = ScARFileManager.get_qr_file(self.active_user, self.active_project, admin=True)
+            pub_qr_image_path = sc_file_manager.get_qr_file(self.active_user, self.active_project, admin=False)
+            admin_qr_image_path = sc_file_manager.get_qr_file(self.active_user, self.active_project, admin=True)
 
         # Check if the qr image path is still none after trying to download. If it is then there is no qr code to
         # preview.
@@ -412,9 +412,9 @@ class ChimeraXScholARTool(ToolInstance):
             print("Can't preview because there is no QR code available.")
             return
 
-        ScARFileManager.update_augs_info(self.active_user, self.active_project)
+        sc_file_manager.update_augs_info(self.active_user, self.active_project)
 
-        tracking_score = ScARFileManager.get_aug_tracking_score(
+        tracking_score = sc_file_manager.get_aug_tracking_score(
             self.active_user, self.active_project, self.active_augmentation)
 
         # Child window made from main tool window
