@@ -22,6 +22,13 @@ copies, of the software or any revisions or derivations thereof.
 === UCSF ChimeraX Copyright ===
 -->
 
+# ChimeraX Scholar
+
+Create, edit, and export your ChimeraX models to [Schol-AR's](https://www.schol-ar.io/) augmented reality projects. 
+User interface and commands support project creation, augmentation creation, and augmentation editing capabilities.
+
+Download on the [ChimeraX Toolshed](https://cxtoolshed.rbvi.ucsf.edu/apps/chimeraxscholar)
+
 # Command: scholar
 
 <a href="https://www.cgl.ucsf.edu/home/meng/chimerax/vdocs/user/index.html">
